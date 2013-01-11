@@ -1,0 +1,32 @@
+{
+    "name": "naturalweb/base",
+    "description": "Conjunto de library, bases para montagem de aplicações em Zend Framework 2",
+    "type": "library",
+    "keywords": [
+        "zf2", "zend", "framework", "naturalweb"
+    ],
+    "license": "BSD-3-Clause",
+    "version": "0.0.1",
+    "authors": [
+        {
+            "name": "Renato Moura",
+            "email": "renato@naturalweb.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.0.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "squizlabs/php_codesniffer": "1.4.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "NwBase": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}

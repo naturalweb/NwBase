@@ -1,0 +1,19 @@
+vendor
+tmp
+composer.lock
+composer.phar
+
+# OS generated files #
+*~
+._*
+.~lock.*
+*.tmp
+*.swp
+
+.buildpath
+.DS_Store
+.project
+.settings
+
+Thumbs.db
+_notes/
