@@ -8,6 +8,7 @@ class Truncate extends AbstractHelper
 {
     /**
      * Truncate input text
+     * ex: $this->truncateString($text, $length, [$wordsafe = true], [$escape = true])
      *
      * @param string $text
      * @param int $length
