@@ -246,6 +246,42 @@ abstract class AbstractModel implements InterfaceModel
 
         return $this->fetchRow($where);
     }
+    
+    /**
+     * Metodo Magico para definição de metodos de find por campo
+     * ex: findByUsername()
+     * 
+     * @param string $method Metodo
+     * @param array $args Argumentos
+     *  
+     * @return InterfaceEntity
+     */
+    public function __call($method, array $args)
+    {
+        if (!preg_match('/^findBy(\w+)$/', $method, $matches)) {
+            $msg = sprintf('Metodo "%s" inválido', $method);
+            throw new \BadMethodCallException($msg);
+        }
+    
+        $campo = preg_replace('/([A-Z])/', '_\\1', $matches[1]);
+        $campo = trim($campo, '_');
+        $campo = strtolower($campo);
+    
+        $cols = $this->getColumnsNames();
+        if (!in_array($campo, $cols)) {
+            throw new \LogicException('Coluna "'.$campo.'" para busca não existe na tabela');
+        }
+    
+        if (!count($args)) {
+            $msg = sprintf('Argumento obrigatorio para busca, no metodo "%s"', $method);
+            throw new \InvalidArgumentException($msg);
+        }
+    
+        $where = array(
+                $campo => $args[0]
+        );
+        return $this->fetchRow($where);
+    }
 
     /**
      * Faz a listagem trazendo os dados pareados, um array em chave e valor utilizando o metodo fetchPairs

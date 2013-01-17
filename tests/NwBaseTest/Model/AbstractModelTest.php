@@ -430,4 +430,42 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals($expected, $retorno, "Retorno invalido");
     }
+    
+    /**
+     * @expectedException \BadMethodCallException
+     * @expectedExceptionMessage Metodo "buscaPorUsuario" inválido
+     */
+    public function testMagicCallMethodInvalidThrowException()
+    {
+        $this->model->buscaPorUsuario('foo');
+    }
+    
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Coluna "teste" para busca não existe na tabela
+     */
+    public function testMagicCallColumnInvalidThrowException()
+    {
+        $this->model->findByTeste('foo');
+    }
+    
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Argumento obrigatorio para busca, no metodo "findByFoo"
+     */
+    public function testMagicCallArgumentEmptyThrowException()
+    {
+        $this->model->findByFoo();
+    }
+    
+    public function testMagicCallFindByColumn()
+    {
+        $expected = new FooBarEntity();
+        $expected->setFoo(3);
+        $expected->setBar("valor 3");
+    
+        $return = $this->model->findByBar('valor 3');
+    
+        $this->assertEquals($expected, $return);
+    }
 }
