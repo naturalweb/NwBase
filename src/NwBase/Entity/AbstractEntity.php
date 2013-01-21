@@ -51,9 +51,12 @@ abstract class AbstractEntity implements InterfaceEntity
     {
         $vars = get_object_vars($this);
         $cols = array_keys($vars);
-        $cols = array_filter($cols, function($key){
-            return preg_match("/^[^_]/", $key);
-        });
+        $cols = array_filter(
+            $cols,
+            function ($key) {
+                return preg_match("/^[^_]/", $key);
+            }
+        );
         $cols = array_values($cols);
     
         return $cols;
@@ -107,8 +110,9 @@ abstract class AbstractEntity implements InterfaceEntity
         }
     
         // Seta a propriedade conforme a necessidade
-        if (is_string($value))
+        if (is_string($value)) {
             $value = trim($value);
+        }
     
         $value = !empty($value) ? $value : null;
         $this->$property = $value;
@@ -158,7 +162,7 @@ abstract class AbstractEntity implements InterfaceEntity
                 throw new \RuntimeException("Erro interno na expressão regular. method __call");
                 break;
         }
-    }    
+    }
     
     public function preInsert(InterfaceModel $model)
     {

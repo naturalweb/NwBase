@@ -6,28 +6,24 @@ use NwBase\Validator\IsCnpj;
 
 class IsCnpjTest extends \PHPUnit_Framework_TestCase
 {
-	protected $_isCnpj;
-	
-	public function setUp()
-    {
-    	$this->_isCnpj = new IsCnpj();        
-    }
-    
     public function testCpnjValid()
     {
-        $cnpj_valido = "63.563.726/0001-52";
+        $cnpj_valid = "63.563.726/0001-52";
         
         $isCnpj = new IsCnpj();
-        $valid = $isCnpj->isValid($cnpj_valido);
-        $this->assertTrue($valid, "Deveria passar o CNPJ " . $cnpj_valido);
+        $valid = $isCnpj->isValid($cnpj_valid);
+        $this->assertTrue($valid, "Deveria passar o CNPJ " . $cnpj_valid);
     }
     
     public function testCpnjInvalid()
     {
-        $cnpj_invalido = "11222333000112";
+        $cnpj_invalid = "112.223.330/001-12";
     
         $isCnpj = new IsCnpj();
-        $valid = $isCnpj->isValid($cnpj_invalido);
-        $this->assertFalse($valid, "Deveria não passar o CNPJ " . $cnpj_invalido);
+        $valid = $isCnpj->isValid($cnpj_invalid);
+        $this->assertFalse($valid, "Deveria não passar o CNPJ " . $cnpj_invalid);
+        
+        $msgs = $isCnpj->getMessages();
+        $this->assertEquals($msgs[$isCnpj::INVALID], sprintf("Cnpj '%s' inválido!", $cnpj_invalid));
     }
 }

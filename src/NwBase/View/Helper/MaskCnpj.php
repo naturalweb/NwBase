@@ -25,9 +25,9 @@ class MaskCnpj extends AbstractHelper
      */
     public function __invoke($value = null)
     {
-    	$mask = new Mask();
-    	$mask->setView($this->view);
-    	    	
+        $mask = new Mask();
+        $mask->setView($this->view);
+                
         $mask->setCapture('/^([0-9]{2,3})([0-9]{3})([0-9]{3})([0-9]{4})([0-9]{2})$/');
         $mask->setFormat('$1.$2.$3/$4-$5');
         

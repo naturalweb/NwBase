@@ -4,6 +4,7 @@ namespace NwBase\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use NwBase\View\Helper\Mask;
+
 /**
  * Formatação do CPF
  * 
@@ -24,9 +25,9 @@ class MaskCpf extends AbstractHelper
      */
     public function __invoke($value = null)
     {
-    	$mask = new Mask();
-    	$mask->setView($this->view);
-    	
+        $mask = new Mask();
+        $mask->setView($this->view);
+        
         $mask->setCapture('/^([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})$/');
         $mask->setFormat('$1.$2.$3-$4');
         

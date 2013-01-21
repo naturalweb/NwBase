@@ -3,14 +3,6 @@ namespace NwBase\Validator;
 
 use Zend\Validator\AbstractValidator;
 
-/**
- * Valida documento de CPF (brasileiro)
- *
- * @category MY
- * @package  MY_Validate_CPF
- * @author   Renato Moura <renato@naturalweb.com.br>
- * @since    1.0
- */
 class IsCpf extends AbstractValidator
 {
     const INVALID = 'cpfInvalid';
@@ -18,8 +10,8 @@ class IsCpf extends AbstractValidator
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::INVALID   => "CPF '%value%' inválido!",
+    protected $messageTemplates = array(
+        self::INVALID   => "Cpf '%value%' inválido!",
     );
     
     /**
@@ -50,12 +42,12 @@ class IsCpf extends AbstractValidator
             case '99999999999':
                 $this->error(self::INVALID);
                 $valid = false;
-                break;             
+                break;
         }
         
         if ( strlen($value) != 11 ) {
             $this->error(self::INVALID);
-            $valid = false;            
+            $valid = false;
         }
         
         if ( $valid===true ) {

@@ -13,7 +13,7 @@ class DbTableSelect implements AdapterInterface
      * 
      * @var DbSelect
      */
-    private $_dbSelect;
+    private $dbSelect;
     
     public function __construct(Select $select, InterfaceModel $model)
     {
@@ -21,7 +21,7 @@ class DbTableSelect implements AdapterInterface
         $dbAdapter          = $tableGateway->getAdapter();
         $resultSetPrototype = $tableGateway->getResultSetPrototype();
         
-        $this->_dbSelect = new DbSelect($select, $dbAdapter, $resultSetPrototype);
+        $this->dbSelect = new DbSelect($select, $dbAdapter, $resultSetPrototype);
     }
     
     /**
@@ -33,7 +33,7 @@ class DbTableSelect implements AdapterInterface
      */
     public function getItems($offset, $itemCountPerPage)
     {
-        return $this->_dbSelect->getItems($offset, $itemCountPerPage);
+        return $this->dbSelect->getItems($offset, $itemCountPerPage);
     }
     
     /**
@@ -43,6 +43,6 @@ class DbTableSelect implements AdapterInterface
      */
     public function count()
     {
-        return $this->_dbSelect->count();
+        return $this->dbSelect->count();
     }
 }

@@ -18,8 +18,9 @@ class Truncate extends AbstractHelper
      */
     public function __invoke($text, $length, $wordsafe = true, $escape = true)
     {
-        if (strlen($text) <= $length)
+        if (strlen($text) <= $length) {
             return $escape ? $this->view->escapeHtml($text) : $text;
+        }
         
         if (!$wordsafe) {
             $text = substr($text, 0, $length);

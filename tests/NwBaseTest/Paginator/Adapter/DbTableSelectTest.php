@@ -68,7 +68,7 @@ class DbTableSelectTest extends \PHPUnit_Framework_TestCase
         $expectedPrototype = $this->model->getTableGateway()->getResultSetPrototype();
         $expectedAdapter = new DbSelect($select, $this->adapter, $expectedPrototype);
         
-        $this->assertAttributeEquals($expectedAdapter, "_dbSelect", $actualAdapter, "Não setou corretamente o dbSelect");
+        $this->assertAttributeEquals($expectedAdapter, "dbSelect", $actualAdapter, "Não setou corretamente o dbSelect");
         $this->assertEquals(4, $actualAdapter->count(), "Contagem de registro errada");
         
         $itens = $actualAdapter->getItems(1, 2);

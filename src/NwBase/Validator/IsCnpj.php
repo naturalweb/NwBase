@@ -4,14 +4,6 @@ namespace NwBase\Validator;
 
 use Zend\Validator\AbstractValidator;
 
-/**
- * Valida documento de CNPJ (brasileiro)
- *
- * @category MY
- * @package  MY_Validate_Cnpj
- * @author   Renato Moura <renato@naturalweb.com.br>
- * @since    1.0
- */
 class IsCnpj extends AbstractValidator
 {
     const INVALID = 'cpfInvalid';
@@ -19,8 +11,8 @@ class IsCnpj extends AbstractValidator
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::INVALID   => "CNPJ '%value%' inválido!",
+    protected $messageTemplates = array(
+        self::INVALID   => "Cnpj '%value%' inválido!",
     );
     
     /**
@@ -50,11 +42,11 @@ class IsCnpj extends AbstractValidator
             case '88888888888888':
             case '99999999999999':
                 $valid = false;
-                break;             
+                break;
         }
         
         if ( strlen($value) != 14 ) {
-            $valid = false;            
+            $valid = false;
         }
         
         if ( $valid === true ) {
@@ -65,13 +57,15 @@ class IsCnpj extends AbstractValidator
                 $_dOne += substr($c, (11-$i), 1)*(2+($i % 8));
             }
             
-            if ($_dOne == 0)
+            if ($_dOne == 0) {
                 $valid = false;
+            }
                 
             $_dOne = 11 - ($_dOne % 11);
             
-            if ($_dOne > 9)
+            if ($_dOne > 9) {
                 $_dOne = 0;
+            }
                 
             if (substr($dv, 0, 1) != $_dOne) {
                 $valid = false;
@@ -81,8 +75,12 @@ class IsCnpj extends AbstractValidator
             for ($i = 0; $i < 12; $i++) {
                 $_dOne += substr($c, (11-$i), 1)*(2+(($i+1) % 8));
             }
+            
             $_dOne = 11 - ($_dOne % 11);
-            if ($_dOne > 9) $_dOne = 0;
+            if ($_dOne > 9) {
+                $_dOne = 0;
+            }
+            
             if (substr($dv, 1, 1) != $_dOne) {
                 $valid = false;
             }

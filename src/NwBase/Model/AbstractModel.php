@@ -1,18 +1,18 @@
 <?php
 namespace NwBase\Model;
 
-use Zend\Db\Adapter\Adapter,
-    Zend\Db\TableGateway\TableGateway,
-    Zend\Db\Metadata\Object\TableObject,
-    Zend\Db\Sql\Expression,
-    Zend\Db\ResultSet\ResultSet,
-    Zend\Db\Metadata\Metadata;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Metadata\Object\TableObject;
+use Zend\Db\Sql\Expression;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Metadata\Metadata;
 
-use NwBase\Entity\InterfaceEntity,
-    NwBase\Model\InterfaceModel,
-    NwBase\Db\Sql\Select,
-    NwBase\Db\Sql\Update,
-    NwBase\Db\Sql\Delete;
+use NwBase\Entity\InterfaceEntity;
+use NwBase\Model\InterfaceModel;
+use NwBase\Db\Sql\Select;
+use NwBase\Db\Sql\Update;
+use NwBase\Db\Sql\Delete;
 
 abstract class AbstractModel implements InterfaceModel
 {
@@ -146,7 +146,7 @@ abstract class AbstractModel implements InterfaceModel
     {
         $cols = $this->getColumns();
         
-        $extractNames = function ($val){
+        $extractNames = function ($val) {
             return $val->getName();
         };
         
@@ -262,27 +262,27 @@ abstract class AbstractModel implements InterfaceModel
             $msg = sprintf('Metodo "%s" inválido', $method);
             throw new \BadMethodCallException($msg);
         }
-    
         $campo = preg_replace('/([A-Z])/', '_\\1', $matches[1]);
         $campo = trim($campo, '_');
         $campo = strtolower($campo);
-    
+        
         $cols = $this->getColumnsNames();
         if (!in_array($campo, $cols)) {
             throw new \LogicException('Coluna "'.$campo.'" para busca não existe na tabela');
         }
-    
+        
         if (!count($args)) {
             $msg = sprintf('Argumento obrigatorio para busca, no metodo "%s"', $method);
             throw new \InvalidArgumentException($msg);
         }
-    
+        
         $where = array(
-                $campo => $args[0]
+            $campo => $args[0]
         );
+        
         return $this->fetchRow($where);
     }
-
+    
     /**
      * Faz a listagem trazendo os dados pareados, um array em chave e valor utilizando o metodo fetchPairs
      * Listando em pares key => value ex:(id, descricao)
@@ -294,7 +294,7 @@ abstract class AbstractModel implements InterfaceModel
      *
      * @return Ambigous <multitype:, multitype:mixed >
      */
-    public function fetchPairs($columnKey, $columnValue, array $where = NULL, $order = null, array $default = array())
+    public function fetchPairs($columnKey, $columnValue, array $where = null, $order = null, array $default = array())
     {
         $columns = array($columnKey, $columnValue);
 
@@ -350,17 +350,20 @@ abstract class AbstractModel implements InterfaceModel
     {
         $cols = $this->getColumnsNames();
         
-        if (!in_array($column, $cols))
+        if (!in_array($column, $cols)) {
             throw new \LogicException('Coluna "'.$column.'" não existe na tabela');
+        }
 
-        if (is_null($value))
-            return TRUE;
+        if (is_null($value)) {
+            return true;
+        }
 
         $where = array();
         $where[$column] = $value;
 
-        if ($value_primary)
+        if ($value_primary) {
             $where += $this->_whereFromPrimaryKeys($value_primary, true);
+        }
 
         return $this->count($where) ? false : true;
     }

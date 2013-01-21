@@ -18,7 +18,7 @@ class IsHostApp extends AbstractValidator
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $messageTemplates = array(
         self::INVALID   => "Hostname de acesso invalido!",
     );
     
@@ -41,7 +41,7 @@ class IsHostApp extends AbstractValidator
         
         $paternSearch = "^(https?:\/\/)?(www\.)?(.*)";
         if (preg_match("/{$paternSearch}/", $host, $match)) {
-        	$host = trim($match[3], "/");
+            $host = trim($match[3], "/");
         }
         
         $patern = "^(https?:\/\/)?(www\.)?{$host}";

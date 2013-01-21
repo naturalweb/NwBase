@@ -22,10 +22,10 @@ class MaskCep extends AbstractHelper
      * @return string Valor Formatado
      */
     public function __invoke($value)
-    {  
-		$mask = new Mask();		
-		$mask->setView($this->view);
-    	
+    {
+        $mask = new Mask();
+        $mask->setView($this->view);
+        
         $mask->setCapture('/^([0-9]{5})([0-9]{3})$/');
         $mask->setFormat('$1-$2');
         

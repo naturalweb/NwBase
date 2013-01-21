@@ -25,9 +25,9 @@ class MaskPhone extends AbstractHelper
      */
     public function __invoke($value = null)
     {
-    	$mask = new Mask();
-    	$mask->setView($this->view);
-    	
+        $mask = new Mask();
+        $mask->setView($this->view);
+        
         $mask->setCapture('/^([0-9]{2})([0-9]{4,5})([0-9]{4})$/');
         $mask->setFormat('($1) $2-$3');
         
