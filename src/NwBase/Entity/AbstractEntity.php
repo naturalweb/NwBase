@@ -3,6 +3,7 @@
 namespace NwBase\Entity;
 
 use NwBase\Model\InterfaceModel;
+use NwBase\DateTime\DateTime;
 
 abstract class AbstractEntity implements InterfaceEntity
 {
@@ -162,6 +163,31 @@ abstract class AbstractEntity implements InterfaceEntity
                 throw new \RuntimeException("Erro interno na expressão regular. method __call");
                 break;
         }
+    }
+    
+    public static function valueDateTime($format, $value)
+    {
+        switch ($format) {
+            case DateTime::DATETIME:
+                $nameObj = "DateTime";
+                break;
+            case DateTime::DATE:
+                $nameObj = "Date";
+                break;
+            case DateTime::TIME:
+                $nameObj = "Time";
+                break;
+            default:
+                return null;
+        }
+        
+        try {
+            $datetime = new DateTime($value);
+        } catch (Exception $e) {
+            $datetime = null;
+        }
+        
+        return (string) $datetime;
     }
     
     public function preInsert(InterfaceModel $model)
