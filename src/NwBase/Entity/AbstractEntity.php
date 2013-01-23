@@ -181,13 +181,21 @@ abstract class AbstractEntity implements InterfaceEntity
                 return null;
         }
         
-        try {
-            $datetime = new DateTime($value);
-        } catch (Exception $e) {
-            $datetime = null;
+        if ($value instanceof \DateTime) {
+            $datetime = $value;
+            
+        } elseif (empty($value)) {
+            return null;
+            
+        } else {
+            try {
+                $datetime = new DateTime($value);
+            } catch (\Exception $e) {
+                return null;
+            }
         }
         
-        return (string) $datetime;
+        return $datetime->format($format);
     }
     
     public function preInsert(InterfaceModel $model)

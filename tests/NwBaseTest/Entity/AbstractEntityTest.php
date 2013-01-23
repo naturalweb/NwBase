@@ -2,6 +2,8 @@
 
 namespace NwBaseTest\Entity;
 
+use NwBase\Entity\AbstractEntity;
+
 require_once __DIR__ . '/../Tests/FooBarModel.php';
 use NwBaseTest\Tests\FooBarEntity;
 
@@ -187,5 +189,57 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         
         $return = $myTest->__get('poliforlismo');
         $this->assertEquals($poliforlismo, $return, "Não retornou o valor correto");
+    }
+    
+    public function testValueDateTimeWithPhpDateTime()
+    {
+        $date = new \DateTime('2012-12-21 10:55:33');
+        
+        $stringDataTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATETIME, $date);
+        $this->assertEquals('2012-12-21 10:55:33', $stringDataTime);
+        
+        $stringData = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $date);
+        $this->assertEquals('2012-12-21', $stringData);
+        
+        $stringTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::TIME, $date);
+        $this->assertEquals('10:55:33', $stringTime);
+    }
+    
+    public function testValueDateTimeWithValues()
+    {
+        $value = '1980-01-31 20:05:17';
+        
+        $stringDataTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATETIME, $value);
+        $this->assertEquals('1980-01-31 20:05:17', $stringDataTime);
+        
+        $stringData = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $value);
+        $this->assertEquals('1980-01-31', $stringData);
+        
+        $stringTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::TIME, $value);
+        $this->assertEquals('20:05:17', $stringTime);
+    }
+    
+    public function testValueDateTimeVaueEmpty()
+    {
+        $value = '';
+        
+        $return = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $value);
+        $this->assertNull($return);
+    }
+    
+    public function testValueDateTimeFormatInvalid()
+    {
+        $value = '1980-01-31 20:05:17';
+    
+        $return = AbstractEntity::valueDateTime('d/m/Y', $value);
+        $this->assertNull($return);
+    }
+    
+    public function testValueDateTimeValueInvalid()
+    {
+        $value = '21/02/2012';
+    
+        $return = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $value);
+        $this->assertNull($return);
     }
 }
