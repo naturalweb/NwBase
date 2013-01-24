@@ -167,35 +167,35 @@ abstract class AbstractEntity implements InterfaceEntity
     
     public static function valueDateTime($format, $value)
     {
+        if (empty($value)) {
+            return null;
+        }
+        
         switch ($format) {
             case DateTime::DATETIME:
-                $nameObj = "DateTime";
+                $nameObj = "NwBase\\DateTime\\DateTime";
                 break;
             case DateTime::DATE:
-                $nameObj = "Date";
+                $nameObj = "NwBase\\DateTime\\Date";
                 break;
             case DateTime::TIME:
-                $nameObj = "Time";
+                $nameObj = "NwBase\\DateTime\\Time";
                 break;
             default:
                 return null;
         }
         
-        if ($value instanceof \DateTime) {
+        if ($value instanceof DateTime) {
             $datetime = $value;
-            
-        } elseif (empty($value)) {
-            return null;
-            
         } else {
             try {
-                $datetime = new DateTime($value);
+                $datetime = new $nameObj($value);
             } catch (\Exception $e) {
-                return null;
+                $datetime = null;
             }
         }
         
-        return $datetime->format($format);
+        return $datetime;
     }
     
     public function preInsert(InterfaceModel $model)

@@ -2,9 +2,10 @@
 
 namespace NwBaseTest\Entity;
 
-use NwBase\Entity\AbstractEntity;
-
 require_once __DIR__ . '/../Tests/FooBarModel.php';
+
+use NwBase\Entity\AbstractEntity;
+use NwBase\DateTime\DateTime as NwDateTime;
 use NwBaseTest\Tests\FooBarEntity;
 
 class AbstractEntityTest extends \PHPUnit_Framework_TestCase
@@ -191,55 +192,52 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($poliforlismo, $return, "Não retornou o valor correto");
     }
     
-    public function testValueDateTimeWithPhpDateTime()
+    public function testValueDateTimeWithObjDateTime()
     {
-        $date = new \DateTime('2012-12-21 10:55:33');
+        $dateOrig = new NwDateTime('2012-12-21 10:55:33');
         
-        $stringDataTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATETIME, $date);
-        $this->assertEquals('2012-12-21 10:55:33', $stringDataTime);
-        
-        $stringData = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $date);
-        $this->assertEquals('2012-12-21', $stringData);
-        
-        $stringTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::TIME, $date);
-        $this->assertEquals('10:55:33', $stringTime);
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATETIME, $dateOrig);
+        $this->assertSame($dateOrig, $valueReturn);
     }
     
     public function testValueDateTimeWithValues()
     {
-        $value = '1980-01-31 20:05:17';
+        $valueOrig = '1980-01-31 20:05:17';
         
-        $stringDataTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATETIME, $value);
-        $this->assertEquals('1980-01-31 20:05:17', $stringDataTime);
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATETIME, $valueOrig);
+        $this->assertInstanceOf('NwBase\DateTime\DateTime', $valueReturn);
+        $this->assertEquals('1980-01-31 20:05:17', $valueReturn);
         
-        $stringData = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $value);
-        $this->assertEquals('1980-01-31', $stringData);
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATE, $valueOrig);
+        $this->assertInstanceOf('NwBase\DateTime\Date', $valueReturn);
+        $this->assertEquals('1980-01-31', $valueReturn);
         
-        $stringTime = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::TIME, $value);
-        $this->assertEquals('20:05:17', $stringTime);
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::TIME, $valueOrig);
+        $this->assertInstanceOf('NwBase\DateTime\Time', $valueReturn);
+        $this->assertEquals('20:05:17', $valueReturn);
     }
     
     public function testValueDateTimeVaueEmpty()
     {
-        $value = '';
+        $valueOrig = '';
         
-        $return = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $value);
-        $this->assertNull($return);
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATE, $valueOrig);
+        $this->assertNull($valueReturn);
     }
     
     public function testValueDateTimeFormatInvalid()
     {
-        $value = '1980-01-31 20:05:17';
+        $valueOrig = '1980-01-31 20:05:17';
     
-        $return = AbstractEntity::valueDateTime('d/m/Y', $value);
-        $this->assertNull($return);
+        $valueReturn = AbstractEntity::valueDateTime('d/m/Y', $valueOrig);
+        $this->assertNull($valueReturn);
     }
     
     public function testValueDateTimeValueInvalid()
     {
-        $value = '21/02/2012';
+        $valueOrig = '21/02/2012';
     
-        $return = AbstractEntity::valueDateTime(\NwBase\DateTime\DateTime::DATE, $value);
-        $this->assertNull($return);
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATE, $valueOrig);
+        $this->assertNull($valueReturn);
     }
 }
