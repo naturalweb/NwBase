@@ -247,6 +247,27 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     /**
      * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Coluna "baz" não existe na tabela
+     */
+    public function testIsUniqueThrownException()
+    {
+        $value = "valor 1";
+        $is_unique = $this->model->isUnique('baz', $value, 2);
+    }
+    
+    /**
+     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     */
+    public function testIsUniqueValueNull()
+    {
+        $value = null;
+        $is_unique = $this->model->isUnique('bar', $value, 2);
+        $this->assertTrue($is_unique, "Deveria encontrar o registro e retornar falso");
+    }
+    
+    /**
+     * @depends testAbstractModelConstructedCorrectEMetodosGet
      */
     public function testCanDeleteAnEntity()
     {
