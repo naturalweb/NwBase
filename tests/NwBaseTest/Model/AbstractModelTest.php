@@ -37,8 +37,8 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $sql = '
         CREATE TABLE IF NOT EXISTS '.$this->tableNameTest.' (
             foo INTEGER PRIMARY KEY,
-            bar VARCHAR(10),
-            poliforlismo VARCHAR(10)
+            bar VARCHAR(20),
+            poliforlismo VARCHAR(20)
         );';
         $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
         $this->adapter->query("INSERT INTO {$this->tableNameTest} VALUES (1, 'valor 1', null)", Adapter::QUERY_MODE_EXECUTE);
