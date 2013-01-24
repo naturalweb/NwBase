@@ -12,7 +12,7 @@ interface InterfaceEntity
     
     public function toArray();
     
-    public function cols();
+    public function setProperty($property, $value);
     
     public function toString();
     

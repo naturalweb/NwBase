@@ -2,23 +2,28 @@
 
 namespace NwBase\Entity;
 
+use Zend\Stdlib\Hydrator\HydratorInterface;
 use NwBase\Model\InterfaceModel;
-use NwBase\DateTime\DateTime;
+use NwBase\DateTime\DateTime as NwDateTime;
+use NwBase\Entity\Hydrator\HydratorEntity;
 
 abstract class AbstractEntity implements InterfaceEntity
 {
+    /**
+     * @var HydratorInterface
+     */
+    protected $_hydrator = null;
+    
     public function __construct($data = array())
     {
+        $this->_hydrator = new HydratorEntity;
         $this->exchangeArray($data);
     }
     
     public function exchangeArray($data)
     {
         if (is_object($data) ) {
-            if ( $data instanceof InterfaceEntity || method_exists($data, 'toArray') ) {
-                $data = $data->toArray();
-                
-            } elseif ( $data instanceof \ArrayAccess || method_exists($data, 'getArrayCopy') ) {
+            if (is_callable(array($data, 'getArrayCopy'))) {
                 $data = $data->getArrayCopy();
                 
             } else {
@@ -27,15 +32,20 @@ abstract class AbstractEntity implements InterfaceEntity
         }
         
         if (is_array($data) ) {
-            foreach ($data as $key => $value) {
-                $key = strtolower($key);
-                if (property_exists($this, $key)) {
-                    $this->_setProperty($key, $value);
-                }
-            }
+            $this->getHydrator()->hydrate($data, $this);
         }
-    
+        
         return $this;
+    }
+    
+    public function getArrayCopy()
+    {
+        return $this->getHydrator()->extract($this);
+    }
+    
+    final public function toArray()
+    {
+        return $this->getArrayCopy();
     }
     
     /**
@@ -46,36 +56,6 @@ abstract class AbstractEntity implements InterfaceEntity
     public function toString()
     {
         return '';
-    }
-    
-    public function cols()
-    {
-        $vars = get_object_vars($this);
-        $cols = array_keys($vars);
-        $cols = array_filter(
-            $cols,
-            function ($key) {
-                return preg_match("/^[^_]/", $key);
-            }
-        );
-        $cols = array_values($cols);
-    
-        return $cols;
-    }
-    
-    public function getArrayCopy()
-    {
-        $vars = get_object_vars($this);
-        $cols = $this->cols();
-        $cols = array_flip($cols);
-        $data = array_intersect_key($vars, $cols);
-    
-        return $data;
-    }
-    
-    final public function toArray()
-    {
-        return $this->getArrayCopy();
     }
     
     /**
@@ -94,14 +74,14 @@ abstract class AbstractEntity implements InterfaceEntity
         throw new \InvalidArgumentException($msg);
     }
     
-    final private function _setProperty($property, $value)
+    final public function setProperty($property, $value)
     {
         // Valida se existe a propriedade, caso contrario gera a excessão
         if (!property_exists($this, $property)) {
             $msg = sprintf('Propriedade "%s" inválida', $property);
             throw new \InvalidArgumentException($msg);
         }
-    
+        
         // Verifica se existe um metodo "SET" da propriedade, e executa a mesma
         $words = array_map('ucfirst', explode("_", $property));
         $method = "set";
@@ -154,7 +134,7 @@ abstract class AbstractEntity implements InterfaceEntity
         switch ($matches[1]) {
             case 'set':
                 $args = (array) $args;
-                return $this->_setProperty($property, array_shift($args));
+                return $this->setProperty($property, array_shift($args));
                 break;
             case 'get':
                 return $this->__get($property);
@@ -172,21 +152,25 @@ abstract class AbstractEntity implements InterfaceEntity
         }
         
         switch ($format) {
-            case DateTime::DATETIME:
+            case NwDateTime::DATETIME:
                 $nameObj = "NwBase\\DateTime\\DateTime";
                 break;
-            case DateTime::DATE:
+            case NwDateTime::DATE:
                 $nameObj = "NwBase\\DateTime\\Date";
                 break;
-            case DateTime::TIME:
+            case NwDateTime::TIME:
                 $nameObj = "NwBase\\DateTime\\Time";
                 break;
             default:
                 return null;
         }
         
-        if ($value instanceof DateTime) {
+        if ($value instanceof NwDateTime) {
             $datetime = $value;
+        
+        } elseif ($value instanceof \DateTime) {
+            $datetime = new $nameObj();
+            $datetime->setTimestamp($value->getTimestamp());
         } else {
             try {
                 $datetime = new $nameObj($value);
@@ -196,6 +180,16 @@ abstract class AbstractEntity implements InterfaceEntity
         }
         
         return $datetime;
+    }
+    
+    /**
+     * Get the hydrator to use for each row object
+     *
+     * @return HydratorInterface
+     */
+    public function getHydrator()
+    {
+        return $this->_hydrator;
     }
     
     public function preInsert(InterfaceModel $model)

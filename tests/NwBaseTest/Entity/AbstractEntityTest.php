@@ -6,6 +6,7 @@ require_once __DIR__ . '/../Tests/FooBarModel.php';
 
 use NwBase\Entity\AbstractEntity;
 use NwBase\DateTime\DateTime as NwDateTime;
+use NwBase\DateTime\Date as NwDate;
 use NwBaseTest\Tests\FooBarEntity;
 
 class AbstractEntityTest extends \PHPUnit_Framework_TestCase
@@ -18,26 +19,29 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         );
     }
     
-    public function testConstrutorContagemColunasArrayCopyAbstractEntity()
+    public function testConstrutorAbstractEntityArrayCopy()
     {
-        $valores = array('foo'=>'teste', 'bar'=>'blabla', 'poliforlismo' => '');
+        $valores = array(
+            'foo' => 'teste', 
+            'bar'=>'blabla', 
+            'poliforlismo' => new NwDate('09/24/2012'),
+        );
         $myTest = new FooBarEntity($valores);
         
-        $cols = $myTest->cols();
-        $this->assertEquals(count($valores), count($cols), "Numero de Colunas invalidas");
-        $this->assertEquals(array_keys($valores), $cols, "Nomes de colunas invalidas");
+        $expected = $valores;
+        $expected['poliforlismo'] = '2012-09-24';
         
         $arrayCopy = $myTest->getArrayCopy();
-        $this->assertEquals($valores, $arrayCopy, "Array Copy, Valores de retorno Invalido");
+        $this->assertEquals($expected, $arrayCopy, "Array Copy, Valores de retorno Invalido");
         $this->assertSame($arrayCopy, $myTest->toArray(), "To Array, Valores de retorno invalido, deve ser como array copy");
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testExchangeArrayComArrayObject()
     {
-        $valores = array('foo'=>'teste', 'bar'=>'blabla');
+        $valores = array('foo'=>'teste', 'bar'=>'blabla', 'poliforlismo' => new \DateTime('09/24/2012'),);
         $obj = new \ArrayObject($valores);
         
         $myTest = new FooBarEntity();
@@ -45,16 +49,23 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         
         $this->assertAttributeEquals($valores['foo'], 'foo', $myTest, "Não setou um valor como deveria");
         $this->assertAttributeEquals($valores['bar'], 'bar', $myTest, "Não setou um valor como deveria");
-        
         $this->assertEquals($myTest, $return, "Não retorno sua propria instancia");
+        
+        $arrayCopy = $myTest->getArrayCopy();
+        $expected = $valores;
+        $expected['poliforlismo'] = '2012-09-24 00:00:00';
+        $this->assertEquals($expected, $arrayCopy, "Array Copy, Valores de retorno Invalido");
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testExchangeArrayComObjetosImplementadoInterfaceEntity()
     {
-        $valores = array('foo'=>'teste', 'bar'=>'blabla');
+        $valores = array(
+            'foo' => 'teste', 
+            'bar' => 'blabla',
+        );
         $obj = new FooBarEntity($valores);
         
         $myTest = new FooBarEntity();
@@ -65,7 +76,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testExchangeArrayComObjetosGenericos()
     {
@@ -82,7 +93,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testRetornoMetodoToStringEmptyAbstract()
     {
@@ -93,7 +104,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testMetodoToStringExtendido()
     {
@@ -129,7 +140,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testMetodoMagicoCallSetterValores()
     {
@@ -154,7 +165,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testMetodoMagicoCallGetterValor()
     {
@@ -179,7 +190,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testConstrutorContagemColunasArrayCopyAbstractEntity
+     * @depends testConstrutorAbstractEntityArrayCopy
      */
     public function testPoliformismoMetodoGet()
     {
@@ -195,9 +206,19 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     public function testValueDateTimeWithObjDateTime()
     {
         $dateOrig = new NwDateTime('2012-12-21 10:55:33');
-        
         $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATETIME, $dateOrig);
         $this->assertSame($dateOrig, $valueReturn);
+        
+        // DateTime from PHP
+        $dateOrig = new \DateTime('2012-12-21 01:03:05');
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATE, $dateOrig);
+        $this->assertInstanceOf('NwBase\DateTime\Date', $valueReturn);
+        $this->assertEquals('2012-12-21', $valueReturn);
+        
+        $dateOrig = new \DateTime('2012-12-21 01:03:05');
+        $valueReturn = AbstractEntity::valueDateTime(NwDateTime::TIME, $dateOrig);
+        $this->assertInstanceOf('NwBase\DateTime\Time', $valueReturn);
+        $this->assertEquals('01:03:05', $valueReturn);
     }
     
     public function testValueDateTimeWithValues()
