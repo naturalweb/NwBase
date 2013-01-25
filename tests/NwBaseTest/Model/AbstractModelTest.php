@@ -7,12 +7,13 @@ require_once __DIR__ . '/../Tests/FooBarModel.php';
 use NwBaseTest\Tests\FooBarModel;
 use NwBaseTest\Tests\FooBarEntity;
 
-use Zend\Db\Metadata\Metadata,
-    Zend\Db\Adapter\Adapter,
-    Zend\Db\ResultSet\ResultSet,
-    Zend\Db\TableGateway\TableGateway,
-    Zend\Db\Sql\Where,
-    NwBase\Db\Sql\Select;
+use Zend\Db\Metadata\Metadata;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Where;
+use Zend\ServiceManager\ServiceManager;
+use NwBase\Db\Sql\Select;
 
 class AbstractModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -62,29 +63,36 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         );
     }
     
-    public function testAbstractModelConstructedCorrectEMetodosGet()
+    public function testAbstractModelConstructedSetAdapter()
     {
         $this->assertSame($this->tableNameTest, $this->model->getTableName(), "Deveria buscar o nome da tabela do metadata");
-        
+                
+        $this->assertSame($this->adapter, $this->model->getAdapter(), "Deveria retornar o Adapter");
+    }
+    
+    public function atestAbstractModelConstructedSetAdapter()
+    {
+        $this->assertSame($this->tableNameTest, $this->model->getTableName(), "Deveria buscar o nome da tabela do metadata");
+    
         $prototype = new FooBarEntity();
         $resultSetPrototype = new ResultSet();
         $resultSetPrototype->setArrayObjectPrototype($prototype);
         $tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
-        
+    
         $this->assertAttributeEquals($tableGateway, "tableGateway", $this->model, "Não setou o tableGateway como deveria");
         $this->assertEquals($tableGateway, $this->model->getTableGateway(), "Deveria buscar o TableGateway");
-        
+    
         $metadata = new Metadata($this->adapter);
         $metadataTable = $metadata->getTable($this->tableNameTest);
         $this->assertAttributeEquals($metadataTable, "metadataTable", $this->model, "Não setou a metadata table como deveria");
-        
-        $this->assertEquals($metadataTable, $this->model->getMetadata(), "Deveria buscar o Metadata");
-        
+    
+        $this->assertEquals($metadataTable, $this->model->getMetadataTable(), "Deveria buscar o Metadata");
+    
         $this->assertSame($this->adapter, $this->model->getAdapter(), "Deveria retornar o Adapter");
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testMetodoBuscaColunasPrimarias()
     {
@@ -95,7 +103,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      * @expectedException LogicException
      * @expectedExceptionMessage Coluna primary não definida
      */
@@ -111,7 +119,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testMetodoBuscaQuantidadeColunasDoModel()
     {
@@ -120,7 +128,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      * @expectedException LogicException
      * @expectedExceptionMessage Table name not found
      */
@@ -132,7 +140,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testMetodoGetSelectDaAbstractModel()
     {
@@ -154,7 +162,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testMetodoFetchAllDaAbstractModel()
     {
@@ -174,7 +182,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testFetchRowReturnsEntiy()
     {
@@ -189,7 +197,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testMetodoFindByIdRetornoPrototype()
     {
@@ -208,7 +216,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testFetchPairs()
     {
@@ -224,7 +232,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCount()
     {
@@ -236,7 +244,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testIsUnique()
     {
@@ -246,7 +254,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      * @expectedException \LogicException
      * @expectedExceptionMessage Coluna "baz" não existe na tabela
      */
@@ -257,7 +265,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testIsUniqueValueNull()
     {
@@ -267,7 +275,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanDeleteAnEntity()
     {
@@ -287,7 +295,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      * @expectedException \Exception
      * @expectedExceptionMessage Valor da chave primaria não definida
      */
@@ -299,7 +307,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanDeleteAnWhereClouser()
     {
@@ -319,7 +327,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanInsertAnEntityEBuscaLastValue()
     {
@@ -341,7 +349,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanInsertAnArrayDireto()
     {
@@ -366,7 +374,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanUpdateAnEntity()
     {
@@ -394,7 +402,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      * @expectedException \Exception
      * @expectedExceptionMessage Valor da chave primaria não definida
      */
@@ -407,7 +415,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @depends testAbstractModelConstructedCorrectEMetodosGet
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanUpdateAnWhereClouser()
     {
@@ -488,5 +496,17 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $return = $this->model->findByBar('valor 3');
     
         $this->assertEquals($expected, $return);
+    }
+    
+    public function testServiceLocatorAwareInterfaceAndGetAdapter(){
+        $services = new ServiceManager();
+        $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
+        
+        $model = new FooBarModel();
+        $model->setServiceLocator($services);
+        
+        $this->assertAttributeEquals($services, 'serviceLocator', $model);
+        $this->assertEquals($services, $model->getServiceLocator());
+        $this->assertEquals($this->adapter, $model->getAdapter());
     }
 }

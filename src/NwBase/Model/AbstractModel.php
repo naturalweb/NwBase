@@ -7,6 +7,8 @@ use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Sql\Expression;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Metadata\Metadata;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
@@ -14,17 +16,23 @@ use NwBase\Db\Sql\Select;
 use NwBase\Db\Sql\Update;
 use NwBase\Db\Sql\Delete;
 
-abstract class AbstractModel implements InterfaceModel
+abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInterface
 {
     protected $tableName = null;
     protected $schemaName = null;
     protected $columnPrimary = null;
     private $columns = null;
-
+    
+    /**
+     * 
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+    
     /**
      * @var Adapter
      */
-    protected $adapter = null;
+    protected $dbAdapter = null;
     
     /**
      * @var TableGateway
@@ -37,24 +45,37 @@ abstract class AbstractModel implements InterfaceModel
     protected $metadataTable = null;
 
     abstract protected function getEntityPrototype();
-
-    public function __construct(Adapter $dbAdapter)
+    
+    public function __construct(Adapter $dbAdapter = null)
     {
-        $this->adapter = $dbAdapter;
+        if ($dbAdapter != null) {
+            $this->setAdapter($dbAdapter);
+        }
         
         if (!$this->getTableName()) {
             throw new \LogicException("Table name not found");
         }
-
-        $prototype = $this->getEntityPrototype();
-        
-        $resultSetPrototype = new ResultSet();
-        $resultSetPrototype->setArrayObjectPrototype($prototype);
-        $tableGateway = new TableGateway($this->getTableName(), $this->adapter, null, $resultSetPrototype);
-        $this->tableGateway  = $tableGateway;
-
-        $metadata = new Metadata($this->adapter);
-        $this->metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+    }
+    
+    /**
+     * Set serviceManager instance
+     *
+     * @param  ServiceLocatorInterface $serviceLocator
+     * @return void
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+    
+    /**
+     * Retrieve serviceManager instance
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
     
     /**
@@ -62,7 +83,23 @@ abstract class AbstractModel implements InterfaceModel
      */
     public function getAdapter()
     {
-        return $this->adapter;
+        if ($this->dbAdapter == null && $this->getServiceLocator() != null) {
+            $this->dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        }
+        
+        return $this->dbAdapter;
+    }
+    
+    /**
+     * @param Adapter $dbAdapter
+     * 
+     * @return $this
+     */
+    public function setAdapter(Adapter $dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+        
+        return $this;
     }
         
     /**
@@ -70,14 +107,27 @@ abstract class AbstractModel implements InterfaceModel
      */
     public function getTableGateway()
     {
+        if ($this->tableGateway == null && $this->getAdapter() != null) {
+            $prototype = $this->getEntityPrototype();
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype($prototype);
+            $tableGateway = new TableGateway($this->getTableName(), $this->getAdapter(), null, $resultSetPrototype);
+            $this->tableGateway  = $tableGateway;
+        }
+        
         return $this->tableGateway;
     }
 
     /**
      * @return TableObject
      */
-    public function getMetadata()
+    public function getMetadataTable()
     {
+        if ($this->metadataTable == null && $this->getAdapter() != null) {
+            $metadata = new Metadata($this->getAdapter());
+            $this->metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+        }
+        
         return $this->metadataTable;
     }
 
@@ -105,7 +155,7 @@ abstract class AbstractModel implements InterfaceModel
         if (!$this->columnPrimary) {
 
             $columnPrimary = null;
-            $listConstraints = $this->metadataTable->getConstraints();
+            $listConstraints = $this->getMetadataTable()->getConstraints();
             if (is_array($listConstraints)) {
                 foreach ($listConstraints as $constraint) {
                     if ($constraint->isPrimaryKey()) {
@@ -133,7 +183,7 @@ abstract class AbstractModel implements InterfaceModel
     public function getColumns()
     {
         if (!$this->columns) {
-            $this->columns = $this->metadataTable->getColumns();
+            $this->columns = $this->getMetadataTable()->getColumns();
         }
 
         return $this->columns;
@@ -216,7 +266,7 @@ abstract class AbstractModel implements InterfaceModel
     public function fetchAll(array $where = null)
     {
         $select = $this->getSelect($where);
-        $resultSet = $this->tableGateway->selectWith($select);
+        $resultSet = $this->getTableGateway()->selectWith($select);
 
         return $resultSet;
     }
@@ -229,7 +279,7 @@ abstract class AbstractModel implements InterfaceModel
     public function fetchRow(array $where)
     {
         $select = $this->getSelect($where);
-        $resultSet = $this->tableGateway->selectWith($select);
+        $resultSet = $this->getTableGateway()->selectWith($select);
         $row = $resultSet->current();
 
         return $row;
@@ -302,8 +352,8 @@ abstract class AbstractModel implements InterfaceModel
         $select->reset(Select::COLUMNS);
         $select->columns($columns);
 
-        $this->tableGateway->initialize();
-        $sql       = $this->tableGateway->getSql();
+        $this->getTableGateway()->initialize();
+        $sql       = $this->getTableGateway()->getSql();
         $statement = $sql->prepareStatementForSqlObject($select);
         $result    = $statement->execute();
 
@@ -328,8 +378,8 @@ abstract class AbstractModel implements InterfaceModel
 
         $select->columns(array('c' => new Expression('COUNT(1)')));
 
-        $this->tableGateway->initialize();
-        $sql       = $this->tableGateway->getSql();
+        $this->getTableGateway()->initialize();
+        $sql       = $this->getTableGateway()->getSql();
         $statement = $sql->prepareStatementForSqlObject($select);
         $result    = $statement->execute();
         $row       = $result->current();
@@ -378,7 +428,7 @@ abstract class AbstractModel implements InterfaceModel
             return $this->insertEntity($set);
         }
 
-        return $this->tableGateway->insert($set);
+        return $this->getTableGateway()->insert($set);
     }
 
     public function insertEntity(InterfaceEntity $entity)
@@ -389,7 +439,7 @@ abstract class AbstractModel implements InterfaceModel
 
             $entity->preInsert($this);
 
-            $return = $this->tableGateway->insert($values);
+            $return = $this->getTableGateway()->insert($values);
 
             $entity->postInsert($this);
 
@@ -417,7 +467,7 @@ abstract class AbstractModel implements InterfaceModel
             $update->where($where);
         }
 
-        return $this->tableGateway->updateWith($update);
+        return $this->getTableGateway()->updateWith($update);
     }
 
     public function updateEntity(InterfaceEntity $entity)
@@ -433,7 +483,7 @@ abstract class AbstractModel implements InterfaceModel
 
             $entity->preUpdate($this);
 
-            $return = $this->tableGateway->update($values, $where);
+            $return = $this->getTableGateway()->update($values, $where);
 
             $entity->postUpdate($this);
 
@@ -459,7 +509,7 @@ abstract class AbstractModel implements InterfaceModel
             $delete->where($where);
         }
 
-        return $this->tableGateway->deleteWith($delete);
+        return $this->getTableGateway()->deleteWith($delete);
     }
 
     public function deleteEntity(InterfaceEntity $entity)
@@ -475,7 +525,7 @@ abstract class AbstractModel implements InterfaceModel
 
             $entity->preDelete($this);
 
-            $return = $this->tableGateway->delete($where);
+            $return = $this->getTableGateway()->delete($where);
 
             $entity->postDelete($this);
 
@@ -495,6 +545,6 @@ abstract class AbstractModel implements InterfaceModel
      */
     public function getLastInsertValue()
     {
-        return $this->tableGateway->getLastInsertValue();
+        return $this->getTableGateway()->getLastInsertValue();
     }
 }
