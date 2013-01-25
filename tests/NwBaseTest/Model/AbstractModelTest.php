@@ -38,7 +38,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $sql = '
         CREATE TABLE IF NOT EXISTS '.$this->tableNameTest.' (
             foo INTEGER PRIMARY KEY,
-            bar VARCHAR(20),
+            bar VARCHAR(20) NOT NULL,
             poliforlismo VARCHAR(20)
         );';
         $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
@@ -346,6 +346,17 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $statement = $this->adapter->createStatement($select->getSqlString());
         $dataSource = $statement->execute();
         $this->assertEquals(1, $dataSource->count(), "Não encontrou o registro inserido");
+    }
+    
+    /**
+     * @depends testAbstractModelConstructedSetAdapter
+     * @expectedException \Exception
+     */
+    public function testCanInsertAnEntityThrowException()
+    {    
+        $myEntity = new FooBarEntity();
+        
+        $return = $this->model->insert($myEntity);
     }
     
     /**
