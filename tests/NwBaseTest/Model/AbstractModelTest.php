@@ -308,6 +308,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     /**
      * @depends testAbstractModelConstructedSetAdapter
+     * @expectedException \Exception
      */
     public function testCanDeleteAnWhereClouser()
     {
@@ -317,13 +318,6 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         
         $rowsAfetados = $this->model->delete($spec);
         $this->assertEquals(3, $rowsAfetados, "Valor de linhas retornadas invalidas");
-    
-        // Se realmente exclui os registros
-        $select = new Select($this->tableNameTest);
-        $select->where($spec);
-        $statement = $this->adapter->createStatement($select->getSqlString());
-        $dataSource = $statement->execute();
-        $this->assertEquals(0, $dataSource->count(), "Não excluiu os 3 registros esperados");
     }
     
     /**

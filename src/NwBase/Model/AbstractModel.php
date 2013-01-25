@@ -13,7 +13,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
 use NwBase\Db\Sql\Select;
-use NwBase\Db\Sql\Delete;
 
 abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInterface
 {
@@ -472,24 +471,12 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     *
-     * @param array|InterfaceEntity $where
+     * 
+     * @param InterfaceEntity $entity
+     * @throws \Exception
+     * @return number
      */
-    public function delete($where)
-    {
-        if ($where instanceof InterfaceEntity) {
-            return $this->deleteEntity($where);
-        }
-
-        $delete = new Delete($this->tableName);
-        if ($where !== null) {
-            $delete->where($where);
-        }
-
-        return $this->getTableGateway()->deleteWith($delete);
-    }
-
-    public function deleteEntity(InterfaceEntity $entity)
+    public function delete(InterfaceEntity $entity)
     {
         try {
             
