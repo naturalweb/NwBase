@@ -2,8 +2,9 @@
 
 namespace NwBaseTest\Entity;
 
-require_once __DIR__ . '/../Tests/FooBarModel.php';
+require_once __DIR__ . '/../Tests/FooBarEntity.php';
 
+use Zend\ServiceManager\ServiceManager;
 use NwBase\Entity\AbstractEntity;
 use NwBase\DateTime\DateTime as NwDateTime;
 use NwBase\DateTime\Date as NwDate;
@@ -260,5 +261,19 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     
         $valueReturn = AbstractEntity::valueDateTime(NwDateTime::DATE, $valueOrig);
         $this->assertNull($valueReturn);
+    }
+    
+    public function testServiceLocatorAwareInterface()
+    {
+    	$services = new ServiceManager();
+    	$entity = new FooBarEntity();
+    	
+    	$this->assertAttributeEmpty("_serviceLocator", $entity);
+    	
+    	$entity->setServiceLocator($services);
+    	
+    	// Service
+    	$this->assertEquals($services, $entity->getServiceLocator());
+    	$this->assertAttributeEquals($services, '_serviceLocator', $entity);
     }
 }
