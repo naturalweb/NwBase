@@ -420,18 +420,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
 
     /**
      *
-     * @param array|InterfaceEntity $set
+     * @param arrayInterfaceEntity $set
      */
-    public function insert($set)
-    {
-        if ($set instanceof InterfaceEntity) {
-            return $this->insertEntity($set);
-        }
-
-        return $this->getTableGateway()->insert($set);
-    }
-
-    public function insertEntity(InterfaceEntity $entity)
+    public function insert(InterfaceEntity $entity)
     {
         try {
             

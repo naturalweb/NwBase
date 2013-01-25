@@ -350,27 +350,13 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     /**
      * @depends testAbstractModelConstructedSetAdapter
+     * @expectedException \Exception
      */
     public function testCanInsertAnArrayDireto()
     {
         $campos = array('bar' => 'valor 5', 'poliforlismo' => 'outro');
         
         $return = $this->model->insert($campos);
-        
-        $this->assertEquals(1, $return, "Valor de retorno invalido, não inseriu o registro");
-        $select = new Select($this->tableNameTest);
-        $select->where($campos);
-        $statement = $this->adapter->createStatement($select->getSqlString());
-        $dataSource = $statement->execute();
-        $this->assertEquals(1, $dataSource->count(), "Não encontrou o registro inserido");
-        
-        $expected = array(
-            'foo' => '5',
-            'bar' => 'valor 5',
-            'poliforlismo' => 'outro',
-        );
-        
-        $this->assertEquals($expected, $dataSource->current(), "Retorno invalido");
     }
     
     /**
