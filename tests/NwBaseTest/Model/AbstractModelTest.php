@@ -402,6 +402,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     /**
      * @depends testAbstractModelConstructedSetAdapter
+     * @expectedException \Exception
      */
     public function testCanUpdateAnWhereClouser()
     {
@@ -411,39 +412,6 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         
         $set = array('poliforlismo' => 'novo valor');
         $rowsAfetados = $this->model->update($set, $spec);
-        $this->assertEquals(3, $rowsAfetados, "Valor de linhas retornadas invalidas");
-    
-        // Se realmente exclui os registros
-        $select = new Select($this->tableNameTest);
-        $select->where($spec);
-        $statement = $this->adapter->createStatement($select->getSqlString());
-        $dataSource = $statement->execute();
-        $this->assertEquals(3, $dataSource->count(), "Não excluiu os 3 registros esperados");
-        
-        $expected = array(
-            array(
-                'foo' => '1',
-                'bar' => 'valor 1',
-                'poliforlismo' => 'novo valor',
-            ),
-            array(
-                'foo' => '3',
-                'bar' => 'valor 3',
-                'poliforlismo' => 'novo valor',
-            ),
-            array(
-                'foo' => '4',
-                'bar' => 'valor 4',
-                'poliforlismo' => 'novo valor',
-            ),
-        );
-        
-        $retorno = array();
-        foreach ($dataSource as $fetch) {
-            $retorno[] = $fetch;
-        }
-        
-        $this->assertEquals($expected, $retorno, "Retorno invalido");
     }
     
     /**

@@ -13,7 +13,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
 use NwBase\Db\Sql\Select;
-use NwBase\Db\Sql\Update;
 use NwBase\Db\Sql\Delete;
 
 abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInterface
@@ -442,26 +441,13 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     *
-     * @param unknown_type $set
-     * @param unknown_type $where
+     * @todo utilizar o Object Hydrator para inserção e edição do Entity
+     * @param InterfaceEntity $entity
+     * @throws \Exception
+     * @throws Exception
+     * @return number
      */
-    public function update($set, $where = null)
-    {
-        if ($set instanceof InterfaceEntity) {
-            return $this->updateEntity($set);
-        }
-
-        $update = new Update($this->tableName);
-        $update->set($set);
-        if ($where !== null) {
-            $update->where($where);
-        }
-
-        return $this->getTableGateway()->updateWith($update);
-    }
-
-    public function updateEntity(InterfaceEntity $entity)
+    public function update(InterfaceEntity $entity)
     {
         try {
             
