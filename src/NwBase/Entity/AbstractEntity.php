@@ -3,16 +3,24 @@
 namespace NwBase\Entity;
 
 use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use NwBase\Model\InterfaceModel;
 use NwBase\DateTime\DateTime as NwDateTime;
 use NwBase\Entity\Hydrator\HydratorEntity;
 
-abstract class AbstractEntity implements InterfaceEntity
+abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInterface
 {
     /**
      * @var HydratorInterface
      */
     protected $_hydrator = null;
+    
+    /**
+     * 
+     * @var ServiceLocatorInterface
+     */
+    protected $_serviceLocator = null;
     
     public function __construct($data = array())
     {
@@ -190,6 +198,27 @@ abstract class AbstractEntity implements InterfaceEntity
     public function getHydrator()
     {
         return $this->_hydrator;
+    }
+    
+    /**
+     * Set serviceManager instance
+     *
+     * @param  ServiceLocatorInterface $serviceLocator
+     * @return void
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+    	$this->_serviceLocator = $serviceLocator;
+    }
+    
+    /**
+     * Retrieve serviceManager instance
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+    	return $this->_serviceLocator;
     }
     
     public function preInsert(InterfaceModel $model)
