@@ -70,27 +70,6 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->adapter, $this->model->getAdapter(), "Deveria retornar o Adapter");
     }
     
-    public function atestAbstractModelConstructedSetAdapter()
-    {
-        $this->assertSame($this->tableNameTest, $this->model->getTableName(), "Deveria buscar o nome da tabela do metadata");
-    
-        $prototype = new FooBarEntity();
-        $resultSetPrototype = new ResultSet();
-        $resultSetPrototype->setArrayObjectPrototype($prototype);
-        $tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
-    
-        $this->assertAttributeEquals($tableGateway, "tableGateway", $this->model, "Não setou o tableGateway como deveria");
-        $this->assertEquals($tableGateway, $this->model->getTableGateway(), "Deveria buscar o TableGateway");
-    
-        $metadata = new Metadata($this->adapter);
-        $metadataTable = $metadata->getTable($this->tableNameTest);
-        $this->assertAttributeEquals($metadataTable, "metadataTable", $this->model, "Não setou a metadata table como deveria");
-    
-        $this->assertEquals($metadataTable, $this->model->getMetadataTable(), "Deveria buscar o Metadata");
-    
-        $this->assertSame($this->adapter, $this->model->getAdapter(), "Deveria retornar o Adapter");
-    }
-    
     /**
      * @depends testAbstractModelConstructedSetAdapter
      */
@@ -462,10 +441,37 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
         
         $model = new FooBarModel();
+        
+        $this->assertAttributeEmpty("serviceLocator", $model);
+        $this->assertAttributeEmpty("dbAdapter", $model);
+        $this->assertAttributeEmpty("tableGateway", $model);
+        $this->assertAttributeEmpty("metadataTable", $model);
+        
+        
         $model->setServiceLocator($services);
         
-        $this->assertAttributeEquals($services, 'serviceLocator', $model);
+        // Service
         $this->assertEquals($services, $model->getServiceLocator());
+        $this->assertAttributeEquals($services, 'serviceLocator', $model);
+        
+        // Adapter
         $this->assertEquals($this->adapter, $model->getAdapter());
+        $this->assertAttributeEquals($this->adapter, 'dbAdapter', $model);
+        
+        // tablegateway
+        $prototype = new FooBarEntity();
+        $resultSetPrototype = new ResultSet();
+        $resultSetPrototype->setArrayObjectPrototype($prototype);
+        $tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
+        
+        $this->assertEquals($tableGateway, $model->getTableGateway(), "Deveria buscar o TableGateway");
+        $this->assertAttributeEquals($tableGateway, 'tableGateway', $model);
+        
+        // Metadata
+        $metadata = new Metadata($this->adapter);
+        $metadataTable = $metadata->getTable($this->tableNameTest);
+        
+        $this->assertEquals($metadataTable, $model->getMetadataTable(), "Deveria buscar o Metadata");
+        $this->assertAttributeEquals($metadataTable, "metadataTable", $model, "Não setou a metadata table como deveria");
     }
 }
