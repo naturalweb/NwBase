@@ -107,6 +107,12 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     {
         if ($this->tableGateway == null && $this->getAdapter() != null) {
             $prototype = $this->getEntityPrototype();
+            
+            $serviceLocator = $this->getServiceLocator();
+            if ($prototype instanceof ServiceLocatorAwareInterface && $serviceLocator != null) {
+            	$prototype->setServiceLocator($serviceLocator);
+            }
+            
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype($prototype);
             $tableGateway = new TableGateway($this->getTableName(), $this->getAdapter(), null, $resultSetPrototype);
