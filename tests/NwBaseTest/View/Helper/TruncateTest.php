@@ -37,4 +37,16 @@ class TruncateTest extends \PHPUnit_Framework_TestCase
 	
 	    $this->assertEquals($stringEsperada, $stringFiltrada, "Não truncate a string como deveria");
 	}
+	
+	public function testTruncateWithStringCurta()
+	{
+	    $truncate = new Truncate();
+	    $view = new View();
+	    $truncate->setView($view);
+	    
+	    $string = "string menor";
+	    $stringFiltrada = $truncate($string, 15);
+	    
+	    $this->assertEquals($string, $stringFiltrada, "Não deve truncar");
+	}
 }

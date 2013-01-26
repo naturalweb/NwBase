@@ -26,4 +26,13 @@ class IsCnpjTest extends \PHPUnit_Framework_TestCase
         $msgs = $isCnpj->getMessages();
         $this->assertEquals($msgs[$isCnpj::INVALID], sprintf("Cnpj '%s' inválido!", $cnpj_invalid));
     }
+    
+    public function testVariosCnpjInvalidos()
+    {
+        $isCnpj = new IsCnpj();
+        
+        $this->assertFalse($isCnpj->isValid("12345678901234"));
+        $this->assertFalse($isCnpj->isValid("0022312213"));
+        $this->assertFalse($isCnpj->isValid("00.000.000/0000/00"));
+    }
 }

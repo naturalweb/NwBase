@@ -26,4 +26,12 @@ class IsCpfTest extends \PHPUnit_Framework_TestCase
 		$msgs = $isCpf->getMessages();
 		$this->assertEquals($msgs[$isCpf::INVALID], sprintf("Cpf '%s' inválido!", $cpf_invalid));
 	}
+	
+	public function testVariosCpfInvalidos()
+	{
+	    $isCnpj = new IsCpf();
+	
+	    $this->assertFalse($isCnpj->isValid("12345678901234"));
+	    $this->assertFalse($isCnpj->isValid("00000000000"));
+	}
 }
