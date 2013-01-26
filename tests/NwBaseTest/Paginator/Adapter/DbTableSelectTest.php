@@ -2,10 +2,9 @@
 
 namespace NwBaseTest\Paginator\Adapter;
 
-// Somente para os Testes
-require_once __DIR__ . '/../../Tests/FooBarModel.php';
-use NwBaseTest\Tests\FooBarModel;
+require_once __DIR__ . '/../../Model/_files/FooBarModel.php';
 
+use NwBaseTest\Model\FooBarModel;
 use NwBase\Paginator\Adapter\DbTableSelect;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;

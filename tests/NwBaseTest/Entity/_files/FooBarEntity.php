@@ -1,6 +1,6 @@
 <?php
 
-namespace NwBaseTest\Tests;
+namespace NwBaseTest\Entity;
 
 use NwBase\Entity\AbstractEntity;
 

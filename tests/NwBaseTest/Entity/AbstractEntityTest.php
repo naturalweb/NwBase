@@ -2,13 +2,13 @@
 
 namespace NwBaseTest\Entity;
 
-require_once __DIR__ . '/../Tests/FooBarEntity.php';
+require_once __DIR__ . '/_files/FooBarEntity.php';
 
 use Zend\ServiceManager\ServiceManager;
 use NwBase\Entity\AbstractEntity;
 use NwBase\DateTime\DateTime as NwDateTime;
 use NwBase\DateTime\Date as NwDate;
-use NwBaseTest\Tests\FooBarEntity;
+use NwBaseTest\Entity\FooBarEntity;
 
 class AbstractEntityTest extends \PHPUnit_Framework_TestCase
 {

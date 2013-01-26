@@ -3,10 +3,10 @@
 namespace NwBaseTest\Model;
 
 // Somente para os Testes
-require_once __DIR__ . '/../Tests/FooBarModel.php';
-use NwBaseTest\Tests\FooBarModel;
-use NwBaseTest\Tests\FooBarEntity;
+require_once __DIR__ . '/_files/FooBarModel.php';
 
+use NwBaseTest\Model\FooBarModel;
+use NwBaseTest\Entity\FooBarEntity;
 use Zend\Db\Metadata\Metadata;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
