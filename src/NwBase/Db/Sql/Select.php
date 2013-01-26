@@ -1,17 +1,34 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause
+ * @package   NwBase\Db\Sql
+ */
 namespace NwBase\Db\Sql;
 
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Select as Zend_Select;
 
+/**
+ * Montagem de Select
+ * 
+ * @category   NwBase
+ * @package    NwBase\Db
+ * @subpackage Sql 
+ * @author     Renato Moura <renato@naturalweb.com.br>
+ */
 class Select extends Zend_Select
 {
     /**
      * Create where clause
+     * Foi Alterado para aceitar o object Predicate, antes da string da coluna
      *
-     * @param  Where|\Closure|string|array $predicate
-     * @param  string $combination One of the OP_* constants from Predicate\PredicateSet
+     * @param Where|\Closure|string|array $predicate   Where clause
+     * @param string                      $combination One of the OP_* constants from Predicate\PredicateSet
+     * 
+     * @see Zend\Db\Sql.Select::where()
      * @return Select
      */
     public function where($predicate, $combination = Predicate\PredicateSet::OP_AND)

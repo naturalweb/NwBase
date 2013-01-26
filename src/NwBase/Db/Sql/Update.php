@@ -1,17 +1,32 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause
+ * @package   NwBase\Db\Sql
+ */
 namespace NwBase\Db\Sql;
 
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Update as Zend_Update;
 
+/**
+ * Montagem de Select
+ *
+ * @category   NwBase
+ * @package    NwBase\Db
+ * @subpackage Sql
+ * @author     Renato Moura <renato@naturalweb.com.br>
+ */
 class Update extends Zend_Update
 {
     /**
      * Create where clause
      *
-     * @param  Where|\Closure|string|array $predicate
-     * @param  string $combination One of the OP_* constants from Predicate\PredicateSet
+     * @param Where|\Closure|string|array $predicate   Create where clause
+     * @param string                      $combination One of the OP_* constants from Predicate\PredicateSet
+     * 
      * @throws Exception\InvalidArgumentException
      * @return Select
      */
