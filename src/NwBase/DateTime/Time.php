@@ -3,6 +3,7 @@
  * Natural Web Ltda. (http://www.naturalweb.com.br)
  * 
  * @copyright Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause
  * @package   NwBase\DateTime
  */
 namespace NwBase\DateTime;
