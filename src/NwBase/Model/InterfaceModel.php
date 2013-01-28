@@ -1,7 +1,20 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\Model
+ */
 namespace NwBase\Model;
 
+/**
+ * Interface para tratamento do database para uma tabela do banco de dados
+ *
+ * @category NwBase
+ * @package  NwBase\Model
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ */
 interface InterfaceModel
 {
     /**
@@ -25,14 +38,14 @@ interface InterfaceModel
      *
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAll(array $where = null);
+    public function fetchAll($where = null);
     
     /**
      * @param mixed $where
      *
      * @return 
      */
-    public function fetchRow(array $where);
+    public function fetchRow($where);
     
     /**
      * @param int $id

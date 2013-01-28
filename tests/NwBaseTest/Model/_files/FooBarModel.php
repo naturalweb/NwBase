@@ -9,7 +9,7 @@ use NwBaseTest\Entity\FooBarEntity;
 
 class FooBarModel extends AbstractModel
 {
-    protected $tableName = 'table_test';
+    protected $_tableName = 'table_test';
     
     protected function getEntityPrototype()
     {

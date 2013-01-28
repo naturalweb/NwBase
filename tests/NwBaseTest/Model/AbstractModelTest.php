@@ -78,7 +78,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $columnPrimary = array('foo');
         
         $this->assertSame($columnPrimary, $this->model->getColumnPrimary(), "Deveria buscar o nome da coluna primary");
-        $this->assertAttributeEquals($columnPrimary, "columnPrimary", $this->model, "Não setou o nome da coluna primary como deveria na popriedade");
+        $this->assertAttributeEquals($columnPrimary, "_columnPrimary", $this->model, "Não setou o nome da coluna primary como deveria na popriedade");
     }
     
     /**
@@ -319,6 +319,9 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $statement = $this->adapter->createStatement($select->getSqlString());
         $dataSource = $statement->execute();
         $this->assertEquals(1, $dataSource->count(), "Não encontrou o registro inserido");
+        
+        $expectedEntity = new FooBarEntity($dataSource->current());
+        $this->assertEquals($expectedEntity, $myEntity, "Deveria alterar a Entity e definir o id primary");
     }
     
     /**
@@ -443,13 +446,13 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     	$model = new FooBarModel();
     
-    	$this->assertAttributeEmpty("serviceLocator", $model);
+    	$this->assertAttributeEmpty("_serviceLocator", $model);
     	
     	$model->setServiceLocator($services);
     	
     	// Service
     	$this->assertEquals($services, $model->getServiceLocator());
-    	$this->assertAttributeEquals($services, 'serviceLocator', $model);
+    	$this->assertAttributeEquals($services, '_serviceLocator', $model);
     }
     
     public function testGetAdapterAndGetTablegatewayAndMetadata()
@@ -460,17 +463,17 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     	$model = new FooBarModel();
     	$model->setServiceLocator($services);
     	
-    	$this->assertAttributeEmpty("dbAdapter", $model);
-    	$this->assertAttributeEmpty("tableGateway", $model);
-    	$this->assertAttributeEmpty("metadataTable", $model);
+    	$this->assertAttributeEmpty("_dbAdapter", $model);
+    	$this->assertAttributeEmpty("_tableGateway", $model);
+    	$this->assertAttributeEmpty("_metadataTable", $model);
     	
     	// Service
     	$this->assertEquals($services, $model->getServiceLocator());
-    	$this->assertAttributeEquals($services, 'serviceLocator', $model);
+    	$this->assertAttributeEquals($services, '_serviceLocator', $model);
     
     	// Adapter
     	$this->assertEquals($this->adapter, $model->getAdapter());
-    	$this->assertAttributeEquals($this->adapter, 'dbAdapter', $model);
+    	$this->assertAttributeEquals($this->adapter, '_dbAdapter', $model);
     
     	// tablegateway
     	$prototype = new FooBarEntity();
@@ -480,13 +483,13 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     	$tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
     
     	$this->assertEquals($tableGateway, $model->getTableGateway(), "Deveria buscar o TableGateway");
-    	$this->assertAttributeEquals($tableGateway, 'tableGateway', $model);
+    	$this->assertAttributeEquals($tableGateway, '_tableGateway', $model);
     
     	// Metadata
     	$metadata = new Metadata($this->adapter);
     	$metadataTable = $metadata->getTable($this->tableNameTest);
     
     	$this->assertEquals($metadataTable, $model->getMetadataTable(), "Deveria buscar o Metadata");
-    	$this->assertAttributeEquals($metadataTable, "metadataTable", $model, "Não setou a metadata table como deveria");
+    	$this->assertAttributeEquals($metadataTable, "_metadataTable", $model, "Não setou a metadata table como deveria");
     }
 }

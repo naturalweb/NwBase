@@ -1,4 +1,11 @@
 <?php
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\Model
+ */
 namespace NwBase\Model;
 
 use Zend\Db\Adapter\Adapter;
@@ -14,36 +21,70 @@ use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
 use NwBase\Db\Sql\Select;
 
+/**
+ * Abstração para tratar com o database para uma tabela do banco de dados
+ * 
+ * @category NwBase
+ * @package  NwBase\Model
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ * @abstract
+ */
 abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInterface
 {
-    protected $tableName = null;
-    protected $schemaName = null;
-    protected $columnPrimary = null;
-    private $columns = null;
+    /** 
+     * @var string
+     */
+    protected $_tableName = null;
     
-    /**
-     * 
+    /** 
+     * @var string
+     */
+    protected $_schemaName = null;
+    
+    /** 
+     * @var array
+     */
+    protected $_columnPrimary = null;
+    
+    /** 
+     * @var array
+     */
+    private $_columns = null;
+    
+    /** 
      * @var ServiceLocatorInterface
      */
-    protected $serviceLocator;
+    protected $_serviceLocator;
     
     /**
      * @var Adapter
      */
-    protected $dbAdapter = null;
+    protected $_dbAdapter = null;
     
     /**
      * @var TableGateway
      */
-    protected $tableGateway = null;
+    protected $_tableGateway = null;
 
     /**
      * @var TableObject
      */
-    protected $metadataTable = null;
-
+    protected $_metadataTable = null;
+    
+    /**
+     * Retorna o prototype da Entity
+     * 
+     * @return InterfaceEntity
+     */
     abstract protected function getEntityPrototype();
     
+    /**
+     * Construtor
+     * 
+     * @param Adapter $dbAdapter Adapter Database
+     * 
+     * @throws \LogicException
+     */
     public function __construct(Adapter $dbAdapter = null)
     {
         if ($dbAdapter != null) {
@@ -58,12 +99,14 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Set serviceManager instance
      *
-     * @param  ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator Object Service
+     * 
      * @return void
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->_serviceLocator = $serviceLocator;
+        return $this;
     }
     
     /**
@@ -73,90 +116,103 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      */
     public function getServiceLocator()
     {
-        return $this->serviceLocator;
+        return $this->_serviceLocator;
     }
     
     /**
+     * Retorna o Adapter do database
+     * 
      * @return Adapter
      */
     public function getAdapter()
     {
-        if ($this->dbAdapter == null && $this->getServiceLocator() != null) {
-            $this->dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        if ($this->_dbAdapter == null && $this->getServiceLocator() != null) {
+            $this->_dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         }
         
-        return $this->dbAdapter;
+        return $this->_dbAdapter;
     }
     
     /**
-     * @param Adapter $dbAdapter
+     * Seta o Adapter
+     * 
+     * @param Adapter $dbAdapter Adatapter do database
      * 
      * @return $this
      */
     public function setAdapter(Adapter $dbAdapter)
     {
-        $this->dbAdapter = $dbAdapter;
-        
+        $this->_dbAdapter = $dbAdapter;
         return $this;
     }
         
     /**
+     * Objeto TableGateway
+     * 
      * @return TableGateway
      */
     public function getTableGateway()
     {
-        if ($this->tableGateway == null && $this->getAdapter() != null) {
+        if ($this->_tableGateway == null && $this->getAdapter() != null) {
             $prototype = $this->getEntityPrototype();
             
             $serviceLocator = $this->getServiceLocator();
             if ($prototype instanceof ServiceLocatorAwareInterface && $serviceLocator != null) {
-            	$prototype->setServiceLocator($serviceLocator);
+                $prototype->setServiceLocator($serviceLocator);
             }
             
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype($prototype);
             $tableGateway = new TableGateway($this->getTableName(), $this->getAdapter(), null, $resultSetPrototype);
-            $this->tableGateway  = $tableGateway;
+            $this->_tableGateway  = $tableGateway;
         }
         
-        return $this->tableGateway;
+        return $this->_tableGateway;
     }
 
     /**
+     * Retorna o object TableObject que representa o metadata da tabela
+     * 
      * @return TableObject
      */
     public function getMetadataTable()
     {
-        if ($this->metadataTable == null && $this->getAdapter() != null) {
+        if ($this->_metadataTable == null && $this->getAdapter() != null) {
             $metadata = new Metadata($this->getAdapter());
-            $this->metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+            $this->_metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
         }
         
-        return $this->metadataTable;
+        return $this->_metadataTable;
     }
 
     /**
+     * Retorna nome do Tabela do database
+     * 
      * @return string
      */
     public function getTableName()
     {
-        return $this->tableName;
+        return $this->_tableName;
     }
 
     /**
+     * Retorna nome do Schema do database
+     * 
      * @return string
      */
     public function getSchemaName()
     {
-        return $this->schemaName;
+        return $this->_schemaName;
     }
 
     /**
+     * Retorna array com o name das colunas primarias
+     * 
      * @return array
      */
     public function getColumnPrimary()
     {
-        if (!$this->columnPrimary) {
+        if (!$this->_columnPrimary) {
 
             $columnPrimary = null;
             $listConstraints = $this->getMetadataTable()->getConstraints();
@@ -169,31 +225,35 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
                 }
 
                 if ( is_array($columnPrimary) && count($columnPrimary)) {
-                    $this->columnPrimary = $columnPrimary;
+                    $this->_columnPrimary = $columnPrimary;
                 }
             }
         }
 
-        if (!$this->columnPrimary) {
+        if (!$this->_columnPrimary) {
             throw new \LogicException("Coluna primary não definida");
         }
 
-        return (array) $this->columnPrimary;
+        return (array) $this->_columnPrimary;
     }
 
     /**
+     * Array com os objetos de Column
+     * 
      * @return array
      */
     public function getColumns()
     {
-        if (!$this->columns) {
-            $this->columns = $this->getMetadataTable()->getColumns();
+        if (!$this->_columns) {
+            $this->_columns = $this->getMetadataTable()->getColumns();
         }
 
-        return $this->columns;
+        return $this->_columns;
     }
     
     /**
+     * Nome das Colunas da tabela do database
+     * 
      * @return array
      */
     public function getColumnsNames()
@@ -208,7 +268,15 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         
         return $cols;
     }
-
+    
+    /**
+     * Cria um array com as condições para busca um registro atraves da chave primary
+     *  
+     * @param int|string|array $pkey Valor da Chave
+     * @param boolean          $not  Logica negativa ou não
+     * 
+     * @return array
+     */
     protected function _whereFromPrimaryKeys($pkey, $not = false)
     {
         $where = array();
@@ -231,7 +299,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     * @param $where
+     * Cria o objeto Select baseado no argumentos
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
      *
      * @return Select
      */
@@ -264,10 +334,13 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     *
+     * Retorna o resultado da busca no objeto ResultSet
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
+     * 
      * @return ResultSet
      */
-    public function fetchAll(array $where = null)
+    public function fetchAll($where = null)
     {
         $select = $this->getSelect($where);
         $resultSet = $this->getTableGateway()->selectWith($select);
@@ -276,11 +349,13 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     * @param mixed $where
+     * Busca p primeiro registro da busca
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
      *
      * @return InterfaceEntity
      */
-    public function fetchRow(array $where)
+    public function fetchRow($where)
     {
         $select = $this->getSelect($where);
         $resultSet = $this->getTableGateway()->selectWith($select);
@@ -290,7 +365,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     * @param int|array $id
+     * Faz a busca pela coluna(s) de chave primary
+     * 
+     * @param int|array $id valor do ID
      *
      * @return InterfaceEntity
      */
@@ -305,10 +382,10 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * Metodo Magico para definição de metodos de find por campo
      * ex: findByUsername()
      * 
-     * @param string $method Metodo
-     * @param array $args Argumentos
+     * @param string $method Name do Metodo
+     * @param array  $args   Argumentos recebidos
      *  
-     * @return InterfaceEntity
+     * @return mixed
      */
     public function __call($method, array $args)
     {
@@ -341,14 +418,14 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * Faz a listagem trazendo os dados pareados, um array em chave e valor utilizando o metodo fetchPairs
      * Listando em pares key => value ex:(id, descricao)
      *
-     * @param string $columnKey   Campo da Chave / Valor
-     * @param string $columnValue Campo da Descricao / texto
-     * @param array  $where    OPTIONAL Condição da busca
-     * @param array  $order    OPTIONAL Campos default a serem inseridas
+     * @param string                      $columnKey   Campo da Chave / Valor
+     * @param string                      $columnValue Campo da Descricao / texto
+     * @param Where|\Closure|string|array $where       OPTIONAL Condição da busca
+     * @param array                       $order       OPTIONAL Campos default a serem inseridas
      *
-     * @return Ambigous <multitype:, multitype:mixed >
+     * @return array
      */
-    public function fetchPairs($columnKey, $columnValue, array $where = null, $order = null, array $default = array())
+    public function fetchPairs($columnKey, $columnValue, $where = null, $order = null, array $default = array())
     {
         $columns = array($columnKey, $columnValue);
 
@@ -369,7 +446,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     * @param mixed $where
+     * Conta a quantidade de registro pela condição
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
      *
      * @return int
      */
@@ -394,8 +473,8 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Verifica se ja existe o valor no campo informado
      *
-     * @param string     $column     O Campo para verificar
-     * @param string     $value     O Valor para verificar
+     * @param string     $column        O Campo para verificar
+     * @param string     $value         O Valor para verificar
      * @param int|string $value_primary O Valor da(s) Coluna(s) Primaria
      *
      * @return boolean
@@ -423,8 +502,13 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     *
-     * @param arrayInterfaceEntity $set
+     * Insere um registro, retornar o numero de registros afetados e busca a entity nova atraves do id
+     * 
+     * @param InterfaceEntity $entity Object do registro
+     * 
+     * @throws \Exception
+     * @todo utilizar o Object Hydrator para inserção e edição do Entity
+     * @return number
      */
     public function insert(InterfaceEntity $entity)
     {
@@ -435,9 +519,16 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             $entity->preInsert($this);
 
             $return = $this->getTableGateway()->insert($values);
-
+            
             $entity->postInsert($this);
-
+            
+            // Seta o Id Primary caso exista
+            $lastInsertId = $this->getLastInsertValue();
+            $columnPrimary = $this->getColumnPrimary();
+            if ($lastInsertId) {
+                $entity->setProperty($columnPrimary[0], $lastInsertId);
+            }
+            
             return $return;
 
         } catch (\Exception $e) {
@@ -446,10 +537,12 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     * @todo utilizar o Object Hydrator para inserção e edição do Entity
-     * @param InterfaceEntity $entity
+     * Edita o registro baseado na entity, e retornar o numero de registros afetados
+     * 
+     * @param InterfaceEntity $entity Object do registro
+     * 
      * @throws \Exception
-     * @throws Exception
+     * @todo utilizar o Object Hydrator para inserção e edição do Entity
      * @return number
      */
     public function update(InterfaceEntity $entity)
@@ -477,8 +570,10 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
+     * Excluir o registro da entity e o objeto
      * 
-     * @param InterfaceEntity $entity
+     * @param InterfaceEntity $entity Object do registro
+     * 
      * @throws \Exception
      * @return number
      */
@@ -488,7 +583,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $campos = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($campos);
-
+            
             if (!count($where) || array_search(null, $where)!==false) {
                 throw new \Exception("Valor da chave primaria não definida");
             }
