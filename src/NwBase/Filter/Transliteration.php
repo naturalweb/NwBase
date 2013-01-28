@@ -1,15 +1,26 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\Filter
+ */
 namespace NwBase\Filter;
 
 use Zend\Filter\FilterInterface;
 
+/**
+ * Remove todos as acentuações
+ * 
+ * @category NwBase
+ * @package  NwBase\Filter
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ */
 class Transliteration implements FilterInterface
 {
     /**
-     * filter
-     * 
-     * @see Zend\Filter\Interface::filter()
+     * Metodo Filtra
      *
      * @return string
      */
