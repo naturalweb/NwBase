@@ -21,13 +21,13 @@ use Zend\View\Helper\ServerUrl;
  */
 class IsHostApp extends AbstractValidator
 {
-    const INVALID = 'hostInvalid';
+    const INVALID_HOST = 'InvalidHost';
 
     /**
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID   => "Hostname de acesso invalido!",
+        self::INVALID_HOST   => "Hostname de acesso invalido!",
     );
     
     /**

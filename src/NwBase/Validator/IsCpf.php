@@ -19,13 +19,13 @@ use Zend\Validator\AbstractValidator;
  */
 class IsCpf extends AbstractValidator
 {
-    const INVALID = 'cpfInvalid';
+    const INVALID_CPF = 'InvalidCpf';
 
     /**
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID   => "Cpf '%value%' inválido!",
+        self::INVALID_CPF   => "Cpf '%value%' inválido!",
     );
     
     /**

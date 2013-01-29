@@ -19,13 +19,13 @@ use Zend\Validator\AbstractValidator;
  */
 class IsCnpj extends AbstractValidator
 {
-    const INVALID = 'cpfInvalid';
+    const INVALID_CNPJ = 'InvalidCnpj';
 
     /**
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID => "Cnpj '%value%' inválido!",
+        self::INVALID_CNPJ => "Cnpj '%value%' inválido!",
     );
     
     /**
