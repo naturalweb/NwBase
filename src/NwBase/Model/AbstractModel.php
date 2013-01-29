@@ -20,6 +20,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
 use NwBase\Db\Sql\Select;
+use NwBase\Db\ResultSet\ResultSetPairs;
 
 /**
  * Abstração para tratar com o database para uma tabela do banco de dados
@@ -349,7 +350,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
 
     /**
-     * Busca p primeiro registro da busca
+     * Busca o primeiro registro da condição da busca
      * 
      * @param Where|\Closure|string|array $where Condição da Busca
      *
@@ -357,7 +358,10 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      */
     public function fetchRow($where)
     {
-        $select = $this->getSelect($where);
+        $limit = 1;
+        $order = null;
+        $select = $this->getSelect($where, $order, $limit);
+        
         $resultSet = $this->getTableGateway()->selectWith($select);
         $row = $resultSet->current();
 
@@ -423,26 +427,26 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * @param Where|\Closure|string|array $where       OPTIONAL Condição da busca
      * @param array                       $order       OPTIONAL Campos default a serem inseridas
      *
-     * @return array
+     * @return ResultSetPairs
      */
-    public function fetchPairs($columnKey, $columnValue, $where = null, $order = null, array $default = array())
+    public function fetchPairs($columnKey, $columnValue, $where = null, $order = null, array $valuesDefault = array())
     {
         $columns = array($columnKey, $columnValue);
-
+        // Monta Select
         $select = $this->getSelect($where, $order);
         $select->reset(Select::COLUMNS);
         $select->columns($columns);
-
+        
+        // Executa Busca Database
         $this->getTableGateway()->initialize();
         $sql       = $this->getTableGateway()->getSql();
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result    = $statement->execute();
-
-        $list = $default;
-        foreach ($result as $row) {
-            $list[$row[$columnKey]] = $row[$columnValue];
-        }
-        return $list;
+        $dataSource    = $statement->execute();
+        
+        // Monta o ResultSet
+        $resultSetPairs = new ResultSetPairs($columnKey, $columnValue, $valuesDefault);
+        $resultSetPairs->initialize($dataSource);
+        return $resultSetPairs;
     }
 
     /**

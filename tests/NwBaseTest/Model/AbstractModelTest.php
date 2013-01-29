@@ -199,15 +199,18 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchPairs()
     {
-        $expected = array(
-                '2' => 'valor 2',
-                '3' => 'valor 3',
-                '4' => 'valor 4',
+        $arrayExpected = array(
+            ''  => 'Selecione',
+            '2' => 'valor 2',
+            '3' => 'valor 3',
+            '4' => 'valor 4',
         );
-    
+        
         $where = array(new \Zend\Db\Sql\Predicate\Operator('foo', '>', 1));
-        $pairs = $this->model->fetchPairs('foo', 'bar', $where);
-        $this->assertEquals($expected, $pairs, "Valores pareado invalidos");
+        $resultPairs = $this->model->fetchPairs('foo', 'bar', $where, '', array(''=>'Selecione'));
+        
+        $this->assertInstanceOf('NwBase\Db\ResultSet\ResultSetPairs', $resultPairs, "Objeto de Result Invalido");
+        $this->assertEquals($arrayExpected, $resultPairs->toArray(), "Valores pareado invalidos");
     }
     
     /**
@@ -441,55 +444,55 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     public function testServiceLocatorAwareInterface()
     {
-    	$services = new ServiceManager();
-    	$services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
+        $services = new ServiceManager();
+        $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
     
-    	$model = new FooBarModel();
+        $model = new FooBarModel();
     
-    	$this->assertAttributeEmpty("_serviceLocator", $model);
-    	
-    	$model->setServiceLocator($services);
-    	
-    	// Service
-    	$this->assertEquals($services, $model->getServiceLocator());
-    	$this->assertAttributeEquals($services, '_serviceLocator', $model);
+        $this->assertAttributeEmpty("_serviceLocator", $model);
+        
+        $model->setServiceLocator($services);
+        
+        // Service
+        $this->assertEquals($services, $model->getServiceLocator());
+        $this->assertAttributeEquals($services, '_serviceLocator', $model);
     }
     
     public function testGetAdapterAndGetTablegatewayAndMetadata()
     {
-    	$services = new ServiceManager();
-    	$services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
+        $services = new ServiceManager();
+        $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
     
-    	$model = new FooBarModel();
-    	$model->setServiceLocator($services);
-    	
-    	$this->assertAttributeEmpty("_dbAdapter", $model);
-    	$this->assertAttributeEmpty("_tableGateway", $model);
-    	$this->assertAttributeEmpty("_metadataTable", $model);
-    	
-    	// Service
-    	$this->assertEquals($services, $model->getServiceLocator());
-    	$this->assertAttributeEquals($services, '_serviceLocator', $model);
+        $model = new FooBarModel();
+        $model->setServiceLocator($services);
+        
+        $this->assertAttributeEmpty("_dbAdapter", $model);
+        $this->assertAttributeEmpty("_tableGateway", $model);
+        $this->assertAttributeEmpty("_metadataTable", $model);
+        
+        // Service
+        $this->assertEquals($services, $model->getServiceLocator());
+        $this->assertAttributeEquals($services, '_serviceLocator', $model);
     
-    	// Adapter
-    	$this->assertEquals($this->adapter, $model->getAdapter());
-    	$this->assertAttributeEquals($this->adapter, '_dbAdapter', $model);
+        // Adapter
+        $this->assertEquals($this->adapter, $model->getAdapter());
+        $this->assertAttributeEquals($this->adapter, '_dbAdapter', $model);
+        
+        // tablegateway
+        $prototype = new FooBarEntity();
+        $prototype->setServiceLocator($services);
+        $resultSetPrototype = new ResultSet();
+        $resultSetPrototype->setArrayObjectPrototype($prototype);
+        $tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
     
-    	// tablegateway
-    	$prototype = new FooBarEntity();
-    	$prototype->setServiceLocator($services);
-    	$resultSetPrototype = new ResultSet();
-    	$resultSetPrototype->setArrayObjectPrototype($prototype);
-    	$tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
+        $this->assertEquals($tableGateway, $model->getTableGateway(), "Deveria buscar o TableGateway");
+        $this->assertAttributeEquals($tableGateway, '_tableGateway', $model);
     
-    	$this->assertEquals($tableGateway, $model->getTableGateway(), "Deveria buscar o TableGateway");
-    	$this->assertAttributeEquals($tableGateway, '_tableGateway', $model);
+        // Metadata
+        $metadata = new Metadata($this->adapter);
+        $metadataTable = $metadata->getTable($this->tableNameTest);
     
-    	// Metadata
-    	$metadata = new Metadata($this->adapter);
-    	$metadataTable = $metadata->getTable($this->tableNameTest);
-    
-    	$this->assertEquals($metadataTable, $model->getMetadataTable(), "Deveria buscar o Metadata");
-    	$this->assertAttributeEquals($metadataTable, "_metadataTable", $model, "Não setou a metadata table como deveria");
+        $this->assertEquals($metadataTable, $model->getMetadataTable(), "Deveria buscar o Metadata");
+        $this->assertAttributeEquals($metadataTable, "_metadataTable", $model, "Não setou a metadata table como deveria");
     }
 }
