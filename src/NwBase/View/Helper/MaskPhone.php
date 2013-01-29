@@ -1,18 +1,24 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\View
+ * @subpackage Helper
+ */
 namespace NwBase\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use NwBase\View\Helper\Mask;
 
 /**
- * Formatação de Telefones
- * 
- * Auxiliar da Camada de Visualização
- * 
- * @package MY_View_Helper_Navigation_HtmlTable
- * @author  Renato Moura <renato@naturalweb.com.br>
- * @since   1.0 
+ * Formata a Mascara de Saida de Telefones
+ *
+ * @category   NwBase
+ * @package    NwBase\View
+ * @subpackage Helper
+ * @author     Renato Moura <renato@naturalweb.com.br>
  */
 class MaskPhone extends AbstractHelper
 {

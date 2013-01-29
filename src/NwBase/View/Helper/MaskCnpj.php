@@ -1,18 +1,24 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\View
+ * @subpackage Helper
+ */
 namespace NwBase\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use NwBase\View\Helper\Mask;
 
 /**
- * Formatação do CNPJ
- * 
- * Auxiliar da Camada de Visualização
+ * Formata a Mascara de Saida de CNPJ
  *
- * @package MY_View_Helper_Navigation_MaskCnpj
- * @author  Renato Moura <renato@naturalweb.com.br>
- * @since   1.0 
+ * @category   NwBase
+ * @package    NwBase\View
+ * @subpackage Helper
+ * @author     Renato Moura <renato@naturalweb.com.br>
  */
 class MaskCnpj extends AbstractHelper
 {

@@ -1,15 +1,24 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\View
+ * @subpackage Helper
+ */
 namespace NwBase\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 
+
 /**
- * Formata a Mascara de Saida
+ * Formata a Mascara de Saida diversas
  *
- * @package AbstractHtmlElement
- * @author  Renato Moura <renato@naturalweb.com.br>
- * @since   1.0
+ * @category   NwBase
+ * @package    NwBase\View
+ * @subpackage Helper
+ * @author     Renato Moura <renato@naturalweb.com.br>
  */
 class Mask extends AbstractHelper
 {

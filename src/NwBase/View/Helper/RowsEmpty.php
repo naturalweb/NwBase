@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\View
+ * @subpackage Helper
+ */
 namespace NwBase\View\Helper;
 
 use Zend\View\Helper\AbstractHtmlElement;
@@ -7,7 +14,10 @@ use Zend\View\Helper\AbstractHtmlElement;
 /**
  * Helper monta html de linhas de tabelas
  *
- * @package Zend\View\Helper
+ * @category   NwBase
+ * @package    NwBase\View
+ * @subpackage Helper
+ * @author     Renato Moura <renato@naturalweb.com.br>
  */
 class RowsEmpty extends AbstractHtmlElement
 {

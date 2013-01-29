@@ -1,12 +1,37 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\View
+ * @subpackage Helper
+ */
 namespace NwBase\View\Helper;
 
 use Zend\View\Helper\AbstractHtmlElement;
 
+/**
+ * Monta uma tabela atraves de valores de um array, definindo a quantidade de colunas
+ *
+ * @category   NwBase
+ * @package    NwBase\View
+ * @subpackage Helper
+ * @author     Renato Moura <renato@naturalweb.com.br>
+ */
 class HtmlTable extends AbstractHtmlElement
 {
-    public function __invoke($array, $colulas = 1, $attr = array(), $escape = true)
+    /**
+     * Metodo invoca o helper
+     * 
+     * @param array   $array   Valores
+     * @param int     $colulas Quantidade de colunas
+     * @param array   $attr    Atributos da tabela e colunas
+     * @param boolean $escape  Escapar string?
+     * 
+     * @return string
+     */
+    public function __invoke(array $array, $colulas = 1, array $attr = array(), $escape = true)
     {
         if (!is_array($array) || !count($array)) {
             return '';
