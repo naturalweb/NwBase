@@ -1,9 +1,22 @@
 <?php
-
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\Validator
+ */
 namespace NwBase\Validator;
 
 use Zend\Validator\AbstractValidator;
 
+/**
+ * Efetua a validação de documento CNPJ
+ *
+ * @category NwBase
+ * @package  NwBase\Validator
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ */
 class IsCnpj extends AbstractValidator
 {
     const INVALID = 'cpfInvalid';
@@ -12,7 +25,7 @@ class IsCnpj extends AbstractValidator
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID   => "Cnpj '%value%' inválido!",
+        self::INVALID => "Cnpj '%value%' inválido!",
     );
     
     /**

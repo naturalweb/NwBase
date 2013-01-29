@@ -1,8 +1,22 @@
 <?php
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\Validator
+ */
 namespace NwBase\Validator;
 
 use Zend\Validator\AbstractValidator;
 
+/**
+ * Efetua a validação de documento CPF
+ *
+ * @category NwBase
+ * @package  NwBase\Validator
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ */
 class IsCpf extends AbstractValidator
 {
     const INVALID = 'cpfInvalid';

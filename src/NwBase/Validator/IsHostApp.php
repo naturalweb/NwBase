@@ -1,4 +1,11 @@
 <?php
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license    BSD-3-Clause
+ * @package    NwBase\Validator
+ */
 namespace NwBase\Validator;
 
 use Zend\Validator\AbstractValidator;
@@ -8,8 +15,9 @@ use Zend\View\Helper\ServerUrl;
  * Valida se o endereco enviado é do hostname valido
  * e se é o hostname da applicação
  *
+ * @category NwBase
+ * @package  NwBase\Validator
  * @author   Renato Moura <renato@naturalweb.com.br>
- * @since    1.0
  */
 class IsHostApp extends AbstractValidator
 {
