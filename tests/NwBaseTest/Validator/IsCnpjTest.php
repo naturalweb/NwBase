@@ -24,7 +24,7 @@ class IsCnpjTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($valid, "Deveria não passar o CNPJ " . $cnpj_invalid);
         
         $msgs = $isCnpj->getMessages();
-        $this->assertEquals($msgs[$isCnpj::INVALID], sprintf("Cnpj '%s' inválido!", $cnpj_invalid));
+        $this->assertEquals($msgs[$isCnpj::INVALID_CNPJ], sprintf("Cnpj '%s' inválido!", $cnpj_invalid));
     }
     
     public function testVariosCnpjInvalidos()
