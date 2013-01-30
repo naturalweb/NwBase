@@ -100,7 +100,7 @@ class IsCnpj extends AbstractValidator
         }
         
         if ($valid == false) {
-            $this->error(self::INVALID);
+            $this->error(self::INVALID_CNPJ);
         }
         
         return $valid;

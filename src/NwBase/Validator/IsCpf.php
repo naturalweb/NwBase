@@ -54,13 +54,13 @@ class IsCpf extends AbstractValidator
             case '77777777777':
             case '88888888888':
             case '99999999999':
-                $this->error(self::INVALID);
+                $this->error(self::INVALID_CPF);
                 $valid = false;
                 break;
         }
         
         if ( strlen($value) != 11 ) {
-            $this->error(self::INVALID);
+            $this->error(self::INVALID_CPF);
             $valid = false;
         }
         
@@ -73,7 +73,7 @@ class IsCpf extends AbstractValidator
                 $d = ((10 * $d) % 11) % 10;
     
                 if ($value{$c} != $d) {
-                    $this->error(self::INVALID);
+                    $this->error(self::INVALID_CPF);
                     $valid = false;
                 }
             }
