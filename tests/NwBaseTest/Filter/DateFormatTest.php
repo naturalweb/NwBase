@@ -35,7 +35,7 @@ class DateFormatTest extends \PHPUnit_Framework_TestCase
     {
         $time = '31/12/2012';
     
-        $filterDate = new DateFormat();
+        $filterDate = new DateFormat(array('format' => ''));
         $actualDate = $filterDate->filter($time);
         
         $this->assertNull($actualDate);
