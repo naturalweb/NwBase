@@ -11,8 +11,7 @@ namespace NwBase\Stdlib;
 use Zend\Stdlib\StringUtils as Zend_StringUtils;
 
 /**
- * Extende a class StringUtils do Zend, adiciona o metodo
- * mb_str_pad(), itilizando as funções mb_string
+ * Extende a class StringUtils do Zend
  *
  * @category NwBase
  * @package  NwBase\Stdlib
@@ -22,7 +21,8 @@ use Zend\Stdlib\StringUtils as Zend_StringUtils;
 class StringUtils extends Zend_StringUtils
 {
     /**
-     * Completa uma string com um tamnho e caracteres especificos
+     * Completa uma string com um tamanho e caracteres especificos
+     * Utiliza as funções mb_string para considerar acentuação
      * 
      * @param string $input String inicial
      * @param int    $len   Tamanho esperado
@@ -30,11 +30,10 @@ class StringUtils extends Zend_StringUtils
      * 
      * @return string
      */
-    public static function mb_str_pad($input, $len, $char = ' ')
+    public static function mb_str_pad($input, $len, $chars = ' ')
     {
         while (($len - mb_strlen($input, 'utf-8')) > 0) {
-            $input .= $char;
-            $qtd--;
+            $input .= $chars;
         }
         
         $input = mb_substr($input, 0, $len, 'utf-8');
