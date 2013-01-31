@@ -26,7 +26,7 @@ class StringUtils extends Zend_StringUtils
      * 
      * @param string $input String inicial
      * @param int    $len   Tamanho esperado
-     * @param string $char  Caracteres para completar
+     * @param string $chars Caracteres para completar
      * 
      * @return string
      */

@@ -31,14 +31,12 @@ class DateFormat extends AbstractFilter
     /**
      * Sets filter options
      *
-     * @param  string|array|Traversable $formatOrOptions
+     * @param string|array|Traversable $formatOrOptions Options or Format
      */
     public function __construct($formatOrOptions = null)
     {
         if ($formatOrOptions !== null) {
-            if (!is_array($formatOrOptions)
-                    && !$formatOrOptions  instanceof Traversable)
-            {
+            if (!is_array($formatOrOptions) && !$formatOrOptions  instanceof Traversable) {
                 $this->setFormat($formatOrOptions);
             } else {
                 $this->setOptions($formatOrOptions);
@@ -49,7 +47,8 @@ class DateFormat extends AbstractFilter
     /**
      * Sets the format option
      *
-     * @param  string $format
+     * @param string $format Formato
+     * 
      * @return StringTrim Provides a fluent interface
      */
     public function setFormat($format)
@@ -73,6 +72,8 @@ class DateFormat extends AbstractFilter
     
     /**
      * Filtra a Data criando um objeto DateTime
+     * 
+     * @return DateTime
      */
     public function filter($value)
     {

@@ -11,6 +11,14 @@ namespace NwBase\Db\ResultSet;
 use Zend\Db\ResultSet\AbstractResultSet;
 use InvalidArgumentException;
 
+/**
+ * Cria um resultset, para parear os dados como chave e valor
+ *
+ * @category NwBase
+ * @package  NwBase\Db\Sql
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ * @see      Zend\Stdlib\StringUtils
+ */
 class ResultSetPairs extends AbstractResultSet
 {
     protected $_valuesDefault = array();
@@ -30,19 +38,43 @@ class ResultSetPairs extends AbstractResultSet
         $this->setValuesDefault($valuesDefault);
     }
     
+    /**
+     * Set Name Column Key
+     * 
+     * @param string $columnKey Name Column
+     * 
+     * @return this
+     */
     public function setComlumnKey($columnKey)
     {
         $this->_columnKey = $columnKey;
+        return $this;
     }
     
+    /**
+     * Set Name Column Value
+     *
+     * @param string $columnValue Name Column
+     * 
+     * @return this
+     */
     public function setComlumnValue($columnValue)
     {
         $this->_columnValue = $columnValue;
+        return $this;
     }
     
+    /**
+     * Set values Default
+     *
+     * @param string $valuesDefault Values
+     * 
+     * @return this
+     */
     public function setValuesDefault($valuesDefault)
     {
         $this->_valuesDefault = $valuesDefault;
+        return $this;
     }
     
     /**
@@ -60,6 +92,11 @@ class ResultSetPairs extends AbstractResultSet
         return $data[$this->_columnKey];
     }
     
+    /**
+     * Retornar o valor
+     * 
+     * @return mixed
+     */
     public function current()
     {
         $data = parent::current();
