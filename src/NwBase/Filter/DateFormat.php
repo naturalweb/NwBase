@@ -83,12 +83,12 @@ class DateFormat extends AbstractFilter
         
         $format = $this->getFormat();
         if (!$format) {
-            return null;
+            return '';
         }
         
         $date = DateTime::createFromFormat($format, $value);
         if (!$date) {
-            $date = null;
+            $date = '';
         }
         
         return $date;
