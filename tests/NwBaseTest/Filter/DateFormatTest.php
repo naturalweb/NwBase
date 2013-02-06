@@ -28,7 +28,7 @@ class DateFormatTest extends \PHPUnit_Framework_TestCase
         $filterDate = new DateFormat($format);
         $actualDate = $filterDate->filter($time);
         
-        $this->assertNull($actualDate);
+        $this->assertEmpty($actualDate);
     }
     
     public function testDateWithNotFormat()
@@ -38,7 +38,7 @@ class DateFormatTest extends \PHPUnit_Framework_TestCase
         $filterDate = new DateFormat(array('format' => ''));
         $actualDate = $filterDate->filter($time);
         
-        $this->assertNull($actualDate);
+        $this->assertEmpty($actualDate);
     }
     
     public function testDateFormatWithObject()
