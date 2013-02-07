@@ -9,7 +9,9 @@
 namespace NwBase\Db\Sql;
 
 use Zend\Db\Sql\Predicate;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select as Zend_Select;
+use Zend\Db\Sql\Where;
 
 /**
  * Montagem de Select
@@ -35,33 +37,32 @@ class Select extends Zend_Select
     {
         if ($predicate instanceof Where) {
             $this->where = $predicate;
-            
+        } elseif ($predicate instanceof Predicate\PredicateInterface) {
+            $this->where->addPredicate($predicate, $combination);
         } elseif ($predicate instanceof \Closure) {
             $predicate($this->where);
-            
         } else {
             if (is_string($predicate)) {
                 // String $predicate should be passed as an expression
-                $predicate = new Predicate\Expression($predicate);
+                $predicate = (strpos($predicate, Expression::PLACEHOLDER) !== false)
+                    ? new Predicate\Expression($predicate) : new Predicate\Literal($predicate);
                 $this->where->addPredicate($predicate, $combination);
             } elseif (is_array($predicate)) {
-    
+
                 foreach ($predicate as $pkey => $pvalue) {
                     // loop through predicates
-    
+
                     if (is_string($pkey) && strpos($pkey, '?') !== false) {
                         // First, process strings that the abstraction replacement character ?
                         // as an Expression predicate
                         $predicate = new Predicate\Expression($pkey, $pvalue);
-                        
                     } elseif ($pvalue instanceof Predicate\PredicateInterface) {
                         // Predicate type is ok
                         $predicate = $pvalue;
-                        
                     } elseif (is_string($pkey)) {
                         // Otherwise, if still a string, do something intelligent with the PHP type provided
-    
-                        if (is_null($pvalue)) {
+
+                        if ($pvalue === null) {
                             // map PHP null to SQL IS NULL expression
                             $predicate = new Predicate\IsNull($pkey, $pvalue);
                         } elseif (is_array($pvalue)) {
@@ -73,7 +74,8 @@ class Select extends Zend_Select
                         }
                     } else {
                         // must be an array of expressions (with int-indexed array)
-                        $predicate = new Predicate\Expression($pvalue);
+                        $predicate = (strpos($pvalue, Expression::PLACEHOLDER) !== false)
+                            ? new Predicate\Expression($pvalue) : new Predicate\Literal($pvalue);
                     }
                     $this->where->addPredicate($predicate, $combination);
                 }
