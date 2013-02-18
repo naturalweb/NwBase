@@ -10,6 +10,7 @@ class AbstractFormTest extends \PHPUnit_Framework_TestCase
     {
         $mockAbstractForm = $this->getMockForAbstractClass('NwBase\Form\AbstractForm');
         $this->assertInstanceOf('Zend\ServiceManager\ServiceLocatorAwareInterface', $mockAbstractForm);
+        $this->assertInstanceOf('NwBase\AwareInterface\PrepareAwareInterface', $mockAbstractForm);
     }
     
     public function testAbstractFormSetService()

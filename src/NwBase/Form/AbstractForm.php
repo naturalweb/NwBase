@@ -8,6 +8,7 @@
  */
 namespace NwBase\Form;
 
+use NwBase\AwareInterface\PrepareAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -19,7 +20,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author   Renato Moura <renato@naturalweb.com.br>
  * @abstract
  */
-abstract class AbstractForm implements ServiceLocatorAwareInterface
+abstract class AbstractForm implements ServiceLocatorAwareInterface, PrepareAwareInterface
 {
     /**
      * 

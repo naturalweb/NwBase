@@ -10,6 +10,7 @@ class AbstractInputFilterTest extends \PHPUnit_Framework_TestCase
     {
         $mockAbstractInputFilter = $this->getMockForAbstractClass('NwBase\InputFilter\AbstractInputFilter');
         $this->assertInstanceOf('Zend\ServiceManager\ServiceLocatorAwareInterface', $mockAbstractInputFilter);
+        $this->assertInstanceOf('NwBase\AwareInterface\PrepareAwareInterface', $mockAbstractInputFilter);
     }
     
     public function testAbstractInputFilterSetService()
