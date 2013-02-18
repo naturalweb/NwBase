@@ -9,6 +9,7 @@
 namespace NwBase\InputFilter;
 
 use NwBase\AwareInterface\PrepareAwareInterface;
+use Zend\InputFilter\InputFilter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
@@ -22,7 +23,7 @@ use Zend\Db\Adapter\Adapter;
  * @author   Renato Moura <renato@naturalweb.com.br>
  * @abstract
  */
-abstract class AbstractInputFilter implements ServiceLocatorAwareInterface, AdapterAwareInterface, PrepareAwareInterface
+abstract class AbstractInputFilter extends InputFilter implements ServiceLocatorAwareInterface, AdapterAwareInterface, PrepareAwareInterface
 {
     /** 
      * @var ServiceLocatorInterface
