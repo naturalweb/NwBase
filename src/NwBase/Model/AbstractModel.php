@@ -19,7 +19,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
-use NwBase\Db\Sql\Select;
+use Zend\Db\Sql\Select;
 use NwBase\Db\ResultSet\ResultSetPairs;
 
 /**

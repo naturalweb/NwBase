@@ -13,7 +13,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Where;
 use Zend\ServiceManager\ServiceManager;
-use NwBase\Db\Sql\Select;
+use Zend\Db\Sql\Select;
 
 class AbstractModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,6 +35,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
                 'charset'        => $charset,
         );
         $this->adapter = new Adapter($db);
+        
         $sql = '
         CREATE TABLE IF NOT EXISTS '.$this->tableNameTest.' (
             foo INTEGER PRIMARY KEY,
