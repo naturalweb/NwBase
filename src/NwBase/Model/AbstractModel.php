@@ -341,9 +341,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * 
      * @return ResultSet
      */
-    public function fetchAll($where = null)
+    public function fetchAll($where = null, $order = null)
     {
-        $select = $this->getSelect($where);
+        $select    = $this->getSelect($where, $order);
         $resultSet = $this->getTableGateway()->selectWith($select);
 
         return $resultSet;
