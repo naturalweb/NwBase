@@ -87,10 +87,12 @@ class DateFormat extends AbstractFilter
         }
         
         $date = DateTime::createFromFormat($format, $value);
-        if (!$date) {
+        
+        $errors = DateTime::getLastErrors();
+        if (!$date || $errors['warning_count'] > 0 ||  $errors['error_count'] > 0) {
             $date = '';
         }
-        
+                
         return $date;
     }
 }

@@ -41,6 +41,17 @@ class DateFormatTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($actualDate);
     }
     
+    public function testDateWithInvalid()
+    {
+        $format = 'Y-m-d';
+        $time = '2013-02-30';
+        
+        $filterDate = new DateFormat($format);
+        $actualDate = $filterDate->filter($time);
+        
+        $this->assertEmpty($actualDate);
+    }
+    
     public function testDateFormatWithObject()
     {
         $time = new DateTime('2013-12-31');
