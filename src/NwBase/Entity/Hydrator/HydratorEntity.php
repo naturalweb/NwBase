@@ -11,7 +11,6 @@ namespace NwBase\Entity\Hydrator;
 
 use Zend\Stdlib\Hydrator\Reflection;
 use NwBase\Entity\InterfaceEntity;
-use NwBase\DateTime\DateTime as NwDateTime;
 
 /**
  * Classe hidrata e extrai dados do objeto entity
@@ -23,6 +22,20 @@ use NwBase\DateTime\DateTime as NwDateTime;
  */
 class HydratorEntity extends Reflection
 {
+    /**
+     * No Contrutor Adicionado o filtra para Extração,
+     * As propriedade privadas identificadas pelo (_) são ignoradas
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    
+        // Filtra as propriedade privadas identificadas pelo (_)
+        $this->getFilter()->addFilter('propertysEntity', function($property){
+            return (boolean) preg_match("/^[^_]/", $property);
+        });
+    }
+    
     /**
      * Hydrate an object by populating public properties
      * Hydrates an object by setting public properties of the object.
@@ -50,60 +63,5 @@ class HydratorEntity extends Reflection
         }
         
         return $object;
-    }
-    
-    /**
-     * Extract values from an object
-     *
-     * @param object $object Objeto para extrair dados
-     * 
-     * @return array
-     */
-    public function extract($object)
-    {
-        $values = parent::extract($object);
-        $cols = $this->colsKeys($values);
-        $cols = array_flip($cols);
-        $data = array_intersect_key($values, $cols);
-        
-        $self = $this;
-        array_walk(
-            $data, 
-            function (&$value, $name) use ($self) {
-                if ($value instanceof NwDateTime) {
-                    $value = (string) $value;
-                    
-                } elseif ($value instanceof \DateTime) {
-                    $datetime = new NwDateTime();
-                    $datetime->setTimestamp($value->getTimestamp());
-                    $value = (string) $datetime;
-                }
-                
-                $value = $self->extractValue($name, $value);
-            }
-        );
-        
-        return $data;
-    }
-    
-    /**
-     * Retorna array com as propriedade da entity
-     * 
-     * @param array $values Valores recebidos
-     * 
-     * @return array
-     */
-    protected function colsKeys($values)
-    {
-        $cols = array_keys($values);
-        $cols = array_filter(
-            $cols, 
-            function ($key) {
-                return preg_match("/^[^_]/", $key);
-            }
-        );
-        $cols = array_values($cols);
-        
-        return $cols;
     }
 }

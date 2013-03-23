@@ -42,7 +42,8 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
      */
     public function testExchangeArrayComArrayObject()
     {
-        $valores = array('foo'=>'teste', 'bar'=>'blabla', 'poliforlismo' => new \DateTime('09/24/2012'),);
+        $poliforlismo = new \DateTime('09/24/2012');
+        $valores = array('foo'=>'teste', 'bar'=>'blabla', 'poliforlismo' => $poliforlismo,);
         $obj = new \ArrayObject($valores);
         
         $myTest = new FooBarEntity();
@@ -54,7 +55,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         
         $arrayCopy = $myTest->getArrayCopy();
         $expected = $valores;
-        $expected['poliforlismo'] = '2012-09-24 00:00:00';
+        $expected['poliforlismo'] = $poliforlismo;
         $this->assertEquals($expected, $arrayCopy, "Array Copy, Valores de retorno Invalido");
     }
     
