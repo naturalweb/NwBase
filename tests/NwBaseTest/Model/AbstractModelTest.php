@@ -167,10 +167,11 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     public function testFetchRowReturnsEntiy()
     {
         $where = array('foo' => 1);
+        
+        $values = array('foo' => 1, 'bar' => 'valor 1');
         $entity = new FooBarEntity();
-        $entity->setFoo(1);
-        $entity->setBar('valor 1');
-    
+        $entity->exchangeArray($values);
+        
         $return = $this->model->fetchRow($where);
         $this->assertInstanceOf('NwBase\Entity\AbstractEntity', $return, "Tipo do prototype inesperado");
         $this->assertEquals($entity, $return, "Não retornou o prototype esperado");
@@ -182,9 +183,10 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     public function testMetodoFindByIdRetornoPrototype()
     {
         $where = array('id' => 1);
+        
+        $values = array('foo' => 1, 'bar' => 'valor 1');
         $entity = new FooBarEntity();
-        $entity->setFoo(1);
-        $entity->setBar('valor 1');
+        $entity->exchangeArray($values);
         
         $prototype = new \ArrayObject();
         $prototype->id   = 1;
@@ -434,10 +436,10 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     public function testMagicCallFindByColumn()
     {
+        $values = array('foo' => 3, 'bar' => 'valor 3');
         $expected = new FooBarEntity();
-        $expected->setFoo(3);
-        $expected->setBar("valor 3");
-    
+        $expected->exchangeArray($values);
+        
         $return = $this->model->findByBar('valor 3');
     
         $this->assertEquals($expected, $return);

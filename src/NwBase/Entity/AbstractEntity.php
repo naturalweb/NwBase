@@ -43,7 +43,6 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function __construct($data = array())
     {
-        $this->_hydrator = new HydratorEntity;
         $this->exchangeArray($data);
     }
     
@@ -65,7 +64,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
             }
         }
         
-        if (is_array($data) ) {
+        if (is_array($data) && count($data) ) {
             $this->getHydrator()->hydrate($data, $this);
         }
         
@@ -285,6 +284,10 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function getHydrator()
     {
+        if (!$this->_hydrator) {
+            $this->_hydrator = new HydratorEntity;
+        }
+        
         return $this->_hydrator;
     }
     
