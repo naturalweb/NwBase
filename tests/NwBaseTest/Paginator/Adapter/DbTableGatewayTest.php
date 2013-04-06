@@ -47,7 +47,7 @@ class DbTableGatewayTest extends \PHPUnit_Framework_TestCase
         );
         
         $this->mockStatement = $mockStatement;
-        $this->dbTableGateway = new DbTableGateway($mockTableGateway);
+        $this->dbTableGateway = new DbTableGateway($mockTableGateway, array('foo' => 'bar'), 'foo');
     }
     
     public function testGetItems()
