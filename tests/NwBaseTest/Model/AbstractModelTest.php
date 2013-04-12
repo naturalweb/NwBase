@@ -12,8 +12,9 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Where;
-use Zend\ServiceManager\ServiceManager;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\TableIdentifier;
+use Zend\ServiceManager\ServiceManager;
 
 class AbstractModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -130,7 +131,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $limit = 5;
         $offset = 2;
         
-        $select = new Select($this->tableNameTest);
+        $select = new Select(new TableIdentifier($this->tableNameTest));
         $select->where($where);
         $select->order($order);
         $select->limit($limit);
@@ -461,6 +462,29 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals($services, '_serviceLocator', $model);
     }
     
+    public function testSetTableGateway()
+    {
+        $model = new FooBarModel();
+        
+        $newTableGateway = new TableGateway(new TableIdentifier($this->tableNameTest), $this->adapter);
+        $return = $model->setTableGateway($newTableGateway);
+        
+        $this->assertAttributeEquals($newTableGateway, '_tableGateway', $model);
+        $this->assertEquals($model, $return, "Deveria retornar a propria instancia");
+    }
+    
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage A Identificação da tabela no objeto deve corresponder
+     */
+    public function testSetTableGatewayThrowException()
+    {
+        $model = new FooBarModel();
+    
+        $newTableGateway = new TableGateway($this->tableNameTest, $this->adapter);
+        $model->setTableGateway($newTableGateway);
+    }
+    
     public function testGetAdapterAndGetTablegatewayAndMetadata()
     {
         $services = new ServiceManager();
@@ -486,7 +510,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $prototype->setServiceLocator($services);
         $resultSetPrototype = new ResultSet();
         $resultSetPrototype->setArrayObjectPrototype($prototype);
-        $tableGateway = new TableGateway($this->tableNameTest, $this->adapter, null, $resultSetPrototype);
+        $tableGateway = new TableGateway(new TableIdentifier($this->tableNameTest), $this->adapter, null, $resultSetPrototype);
     
         $this->assertEquals($tableGateway, $model->getTableGateway(), "Deveria buscar o TableGateway");
         $this->assertAttributeEquals($tableGateway, '_tableGateway', $model);
