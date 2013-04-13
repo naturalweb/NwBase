@@ -11,15 +11,15 @@ namespace NwBase\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Metadata\Object\TableObject;
-use Zend\Db\Sql\Expression;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Metadata\Metadata;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\TableIdentifier;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
-use Zend\Db\Sql\Select;
 use NwBase\Db\ResultSet\ResultSetPairs;
 
 /**
@@ -164,13 +164,28 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype($prototype);
-            $tableGateway = new TableGateway($this->getTableName(), $this->getAdapter(), null, $resultSetPrototype);
+            $tableGateway = new TableGateway($this->getTableIdentifier(), $this->getAdapter(), null, $resultSetPrototype);
             $this->_tableGateway  = $tableGateway;
         }
         
         return $this->_tableGateway;
     }
-
+    
+    /**
+     * Set Objeto TableGateway Manualmente
+     *
+     * @param TableGateway
+     */
+    public function setTableGateway(TableGateway $tableGateway)
+    {
+        if ($this->getTableIdentifier() != $tableGateway->getTable()) {
+            throw new \RuntimeException('A Identificação da tabela no objeto deve corresponder');
+        }
+        
+        $this->_tableGateway = $tableGateway;
+        return $this;
+    }
+    
     /**
      * Retorna o object TableObject que representa o metadata da tabela
      * 
@@ -180,12 +195,25 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     {
         if ($this->_metadataTable == null && $this->getAdapter() != null) {
             $metadata = new Metadata($this->getAdapter());
+            /** 
+             * @todo Efetuar o cache da instancia _metadataTable (TableObject)
+             */
             $this->_metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
         }
         
         return $this->_metadataTable;
     }
-
+    
+    /**
+     * Retorna o object TableIdentifier
+     *
+     * @return TableIdentifier
+     */
+    public function getTableIdentifier()
+    {
+        return new TableIdentifier($this->_tableName, $this->_schemaName);
+    }
+    
     /**
      * Retorna nome do Tabela do database
      * 
@@ -308,8 +336,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      */
     public function getSelect($where = null, $order = null, $limit = null, $offset = null)
     {
-        $tableName = $this->getTableName();
-        $select = new Select($tableName);
+        $select = new Select($this->getTableIdentifier());
 
         // Filtros
         $select->where($where);
@@ -338,6 +365,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * Retorna o resultado da busca no objeto ResultSet
      * 
      * @param Where|\Closure|string|array $where Condição da Busca
+     * @param string|array                $order Ordenação
      * 
      * @return ResultSet
      */
@@ -422,10 +450,11 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * Faz a listagem trazendo os dados pareados, um array em chave e valor utilizando o metodo fetchPairs
      * Listando em pares key => value ex:(id, descricao)
      *
-     * @param string                      $columnKey   Campo da Chave / Valor
-     * @param string                      $columnValue Campo da Descricao / texto
-     * @param Where|\Closure|string|array $where       OPTIONAL Condição da busca
-     * @param array                       $order       OPTIONAL Campos default a serem inseridas
+     * @param string                      $columnKey     Campo da Chave / Valor
+     * @param string                      $columnValue   Campo da Descricao / texto
+     * @param Where|\Closure|string|array $where         OPTIONAL Condição da busca
+     * @param array                       $order         OPTIONAL Campos default a serem inseridas
+     * @param array                       $valuesDefault OPTIONAL Inseriri no inicio como default
      *
      * @return ResultSetPairs
      */
@@ -439,9 +468,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         
         // Executa Busca Database
         $this->getTableGateway()->initialize();
-        $sql       = $this->getTableGateway()->getSql();
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $dataSource    = $statement->execute();
+        $sql        = $this->getTableGateway()->getSql();
+        $statement  = $sql->prepareStatementForSqlObject($select);
+        $dataSource = $statement->execute();
         
         // Monta o ResultSet
         $resultSetPairs = new ResultSetPairs($columnKey, $columnValue, $valuesDefault);

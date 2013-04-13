@@ -161,7 +161,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
             $value = trim($value);
         }
     
-        $value = !empty($value) ? $value : null;
+        $value = $value!='' ? $value : null;
         $this->$property = $value;
     
         return $this;
