@@ -3,6 +3,8 @@
 namespace NwBaseTest\Model;
 
 // Somente para os Testes
+use NwBase\Model\AbstractModel;
+
 require_once __DIR__ . '/_files/FooBarModel.php';
 
 use NwBaseTest\Model\FooBarModel;
@@ -521,5 +523,17 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
         $this->assertEquals($metadataTable, $model->getMetadataTable(), "Deveria buscar o Metadata");
         $this->assertAttributeEquals($metadataTable, "_metadataTable", $model, "Não setou a metadata table como deveria");
+    }
+    
+    public function testSetAndGetDefaultCache()
+    {
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        AbstractModel::setDefaultCache($cache);
+        
+        $model = new FooBarModel();
+        $this->assertAttributeEquals($cache, '_defaultCache', $model);
+        
+        $this->assertEquals($cache, $model::getDefaultCache());
+        $this->assertEquals($cache, AbstractModel::getDefaultCache());
     }
 }

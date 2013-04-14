@@ -18,6 +18,7 @@ use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Cache\Storage\StorageInterface as CacheStorageInterface;
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
 use NwBase\Db\ResultSet\ResultSetPairs;
@@ -71,6 +72,13 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * @var TableObject
      */
     protected $_metadataTable = null;
+    
+    /**
+     * Cache padrão para as informações fornecidas pelo método AbstractModel
+     *
+     * @var CacheStorageInterface
+     */
+    protected static $_defaultCache = null;
     
     /**
      * Retorna o prototype da Entity
@@ -146,7 +154,28 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         $this->_dbAdapter = $dbAdapter;
         return $this;
     }
-        
+
+    /**
+     * Sets the default cache for information returned by AbstractModel.
+     *
+     * @param CacheStorageInterface $cache Object Cache Default
+     * 
+     * @return void
+     */
+    public static function setDefaultCache(CacheStorageInterface $cache)
+    {
+        self::$_defaultCache = $cache;
+    }
+    
+    /**
+     * Gets the default cache for information returned by AbstractModel.
+     *
+     * @return CacheStorageInterface
+     */
+    public static function getDefaultCache()
+    {
+        return self::$_defaultCache;
+    }
     /**
      * Objeto TableGateway
      * 
