@@ -254,12 +254,21 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      */
     public function getMetadataTable()
     {
-        if ($this->_metadataTable == null && $this->getAdapter() != null) {
-            $metadata = new Metadata($this->getAdapter());
-            /** 
-             * @todo Efetuar o cache da instancia _metadataTable (TableObject)
-             */
-            $this->_metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+        if (!$this->_metadataTable && $this->getAdapter() != null) {
+            $metadataCache = $this->getMetadataCache();
+            
+            // dsn;schema.table
+            $parameters = $this->getAdapter()->getDriver()->getConnection()->getConnectionParameters();
+            $key = sprintf('%s;%s.%s', $parameters['dsn'], $this->getSchemaName(), $this->getTableName());
+            $key = md5($key);
+            
+            if (!$metadataCache || ($metadataCache && !$this->_metadataTable = $metadataCache->getItem($key, $success))) {
+                $metadata = new Metadata($this->getAdapter());
+                $this->_metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+                if ($metadataCache != null && $this->_metadataTable) {
+                    $metadataCache->setItem($key, $this->_metadataTable);
+                }
+            }
         }
         
         return $this->_metadataTable;
