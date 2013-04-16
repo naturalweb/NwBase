@@ -531,9 +531,33 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         AbstractModel::setDefaultCache($cache);
         
         $model = new FooBarModel();
-        $this->assertAttributeEquals($cache, '_defaultCache', $model);
+        $this->assertAttributeSame($cache, '_defaultCache', $model);
         
-        $this->assertEquals($cache, $model::getDefaultCache());
-        $this->assertEquals($cache, AbstractModel::getDefaultCache());
+        $this->assertSame($cache, $model::getDefaultCache());
+        $this->assertSame($cache, AbstractModel::getDefaultCache());
+    }
+    
+    public function testSetAndGetMetadataCache()
+    {
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        
+        $model = new FooBarModel();
+        $model->setMetadataCache($cache);
+        
+        $this->assertAttributeSame($cache, '_metadataCache', $model);
+    
+        $this->assertSame($cache, $model->getMetadataCache());
+    }
+    
+    public function testGetMetadataCacheDefault()
+    {
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        AbstractModel::setDefaultCache($cache);
+        
+        $model = new FooBarModel();
+        
+        $this->assertAttributeEquals(null, '_metadataCache', $model);
+        $this->assertSame($cache, $model->getMetadataCache());
+        $this->assertAttributeEquals($cache, '_metadataCache', $model);
     }
 }

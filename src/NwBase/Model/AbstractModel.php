@@ -69,9 +69,16 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     protected $_tableGateway = null;
 
     /**
-     * @var TableObject
+     * @var TableObject Metadata da Tabela
      */
     protected $_metadataTable = null;
+    
+    /**
+     * Cache do Metadata
+     *
+     * @var CacheStorageInterface
+     */
+    protected $_metadataCache = null;
     
     /**
      * Cache padrão para as informações fornecidas pelo método AbstractModel
@@ -176,6 +183,31 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     {
         return self::$_defaultCache;
     }
+    
+    /**
+     * Cache do metadata
+     * 
+     * @param CacheStorageInterface $metadataCache Cache do Metadata
+     */
+    public function setMetadataCache(CacheStorageInterface $metadataCache)
+    {
+        $this->_metadataCache = $metadataCache;
+    }
+    
+    /**
+     * Cache do metadata
+     * 
+     * @return CacheStorageInterface
+     */
+    public function getMetadataCache()
+    {
+       if (!$this->_metadataCache) {
+           $this->_metadataCache = self::getDefaultCache();
+       }
+       
+       return $this->_metadataCache;
+    }
+    
     /**
      * Objeto TableGateway
      * 
