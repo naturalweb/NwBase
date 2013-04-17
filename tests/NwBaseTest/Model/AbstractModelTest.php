@@ -525,15 +525,79 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals($metadataTable, "_metadataTable", $model, "Não setou a metadata table como deveria");
     }
     
+    public function testGetMetadataTableWithCache()
+    {
+        $services = new ServiceManager();
+        $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
+        
+        $key = md5('sqlite::memory:;.table_test');
+        $tableObject = $this->getMock('Zend\Db\Metadata\Object\TableObject', array(), array(), '', false);
+        
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        $cache->expects($this->once())->method('getItem')->with($key, null)->will($this->returnValue($tableObject));
+        
+        AbstractModel::setDefaultCache($cache);
+        
+        $model = new FooBarModel();
+        $model->setServiceLocator($services);
+        
+        $this->assertEquals($tableObject, $model->getMetadataTable());
+    }
+    
+    public function testGetMetadataTable()
+    {
+        $services = new ServiceManager();
+        $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
+    
+        $key = md5('sqlite::memory:;.table_test');
+        $metadata = new Metadata($this->adapter);
+        $metadataTable = $metadata->getTable($this->tableNameTest);
+    
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        $cache->expects($this->once())->method('getItem')->with($key, null)->will($this->returnValue(null));
+        $cache->expects($this->once())->method('setItem')->with($key, $metadataTable)->will($this->returnValue(true));
+        
+        AbstractModel::setDefaultCache($cache);
+        
+        $model = new FooBarModel();
+        $model->setServiceLocator($services);
+    
+        $this->assertEquals($metadataTable, $model->getMetadataTable());
+    }
+    
     public function testSetAndGetDefaultCache()
     {
         $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
         AbstractModel::setDefaultCache($cache);
         
         $model = new FooBarModel();
-        $this->assertAttributeEquals($cache, '_defaultCache', $model);
+        $this->assertAttributeSame($cache, '_defaultCache', $model);
         
-        $this->assertEquals($cache, $model::getDefaultCache());
-        $this->assertEquals($cache, AbstractModel::getDefaultCache());
+        $this->assertSame($cache, $model::getDefaultCache());
+        $this->assertSame($cache, AbstractModel::getDefaultCache());
+    }
+    
+    public function testSetAndGetMetadataCache()
+    {
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        
+        $model = new FooBarModel();
+        $model->setMetadataCache($cache);
+        
+        $this->assertAttributeSame($cache, '_metadataCache', $model);
+    
+        $this->assertSame($cache, $model->getMetadataCache());
+    }
+    
+    public function testGetMetadataCacheDefault()
+    {
+        $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
+        AbstractModel::setDefaultCache($cache);
+        
+        $model = new FooBarModel();
+        
+        $this->assertAttributeEquals(null, '_metadataCache', $model);
+        $this->assertSame($cache, $model->getMetadataCache());
+        $this->assertAttributeEquals($cache, '_metadataCache', $model);
     }
 }

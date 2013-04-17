@@ -69,9 +69,16 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     protected $_tableGateway = null;
 
     /**
-     * @var TableObject
+     * @var TableObject Metadata da Tabela
      */
     protected $_metadataTable = null;
+    
+    /**
+     * Cache do Metadata
+     *
+     * @var CacheStorageInterface
+     */
+    protected $_metadataCache = null;
     
     /**
      * Cache padrão para as informações fornecidas pelo método AbstractModel
@@ -176,6 +183,31 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     {
         return self::$_defaultCache;
     }
+    
+    /**
+     * Cache do metadata
+     * 
+     * @param CacheStorageInterface $metadataCache Cache do Metadata
+     */
+    public function setMetadataCache(CacheStorageInterface $metadataCache)
+    {
+        $this->_metadataCache = $metadataCache;
+    }
+    
+    /**
+     * Cache do metadata
+     * 
+     * @return CacheStorageInterface
+     */
+    public function getMetadataCache()
+    {
+       if (!$this->_metadataCache) {
+           $this->_metadataCache = self::getDefaultCache();
+       }
+       
+       return $this->_metadataCache;
+    }
+    
     /**
      * Objeto TableGateway
      * 
@@ -222,12 +254,21 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      */
     public function getMetadataTable()
     {
-        if ($this->_metadataTable == null && $this->getAdapter() != null) {
-            $metadata = new Metadata($this->getAdapter());
-            /** 
-             * @todo Efetuar o cache da instancia _metadataTable (TableObject)
-             */
-            $this->_metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+        if (!$this->_metadataTable && $this->getAdapter() != null) {
+            $metadataCache = $this->getMetadataCache();
+            
+            // dsn;schema.table
+            $parameters = $this->getAdapter()->getDriver()->getConnection()->getConnectionParameters();
+            $key = sprintf('%s;%s.%s', $parameters['dsn'], $this->getSchemaName(), $this->getTableName());
+            $key = md5($key);
+            
+            if (!$metadataCache || ($metadataCache && !$this->_metadataTable = $metadataCache->getItem($key, $success))) {
+                $metadata = new Metadata($this->getAdapter());
+                $this->_metadataTable = $metadata->getTable($this->getTableName(), $this->getSchemaName());
+                if ($metadataCache != null && $this->_metadataTable) {
+                    $metadataCache->setItem($key, $this->_metadataTable);
+                }
+            }
         }
         
         return $this->_metadataTable;
