@@ -600,4 +600,49 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($cache, $model->getMetadataCache());
         $this->assertAttributeEquals($cache, '_metadataCache', $model);
     }
+    
+    public function testBeginTransaction()
+    {
+        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
+        $mockConnection->expects($this->once())->method('beginTransaction');
+        
+        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver->expects($this->once())->method('getConnection')->will($this->returnValue($mockConnection));
+        
+        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array($mockDriver));
+        $mockAdapter->expects($this->once())->method('getDriver')->will($this->returnValue($mockDriver));
+        
+        $model = new FooBarModel($mockAdapter);
+        $model->beginTransaction();
+    }
+    
+    public function testCommit()
+    {
+        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
+        $mockConnection->expects($this->once())->method('commit');
+    
+        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver->expects($this->once())->method('getConnection')->will($this->returnValue($mockConnection));
+    
+        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array($mockDriver));
+        $mockAdapter->expects($this->once())->method('getDriver')->will($this->returnValue($mockDriver));
+    
+        $model = new FooBarModel($mockAdapter);
+        $model->commit();
+    }
+    
+    public function testRollback()
+    {
+        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
+        $mockConnection->expects($this->once())->method('rollback');
+    
+        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver->expects($this->once())->method('getConnection')->will($this->returnValue($mockConnection));
+    
+        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array($mockDriver));
+        $mockAdapter->expects($this->once())->method('getDriver')->will($this->returnValue($mockDriver));
+    
+        $model = new FooBarModel($mockAdapter);
+        $model->rollback();
+    }
 }

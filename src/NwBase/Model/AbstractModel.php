@@ -715,4 +715,35 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     {
         return $this->getTableGateway()->getLastInsertValue();
     }
+    
+    /**
+     * Begin transaction
+     *
+     * @return void
+     */
+    public function beginTransaction()
+    {
+        return $this->getAdapter()->getDriver()->getConnection()->beginTransaction();
+    }
+    
+    /**
+     * Commit
+     *
+     * @return void
+     */
+    public function commit()
+    {
+        return $this->getAdapter()->getDriver()->getConnection()->commit();
+    }
+    
+    /**
+     * Rollback
+     *
+     * @throws Exception\RuntimeException
+     * @return Connection
+     */
+    public function rollback()
+    {
+        return $this->getAdapter()->getDriver()->getConnection()->rollback();
+    }
 }
