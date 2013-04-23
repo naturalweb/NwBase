@@ -14,9 +14,14 @@ namespace NwBase\AwareInterface;
  * @category NwBase
  * @package  NwBase\AwareInterface
  * @author   Renato Moura <renato@naturalweb.com.br>
- * @abstract
  */
 interface PrepareAwareInterface
 {
+    /**
+     * Metodo responsavel por preparar os elementos para adicionar as classes,
+     * ex: Form, InputFilter
+     * 
+     * @return mixed
+     */
     public function prepareElements();
 }
