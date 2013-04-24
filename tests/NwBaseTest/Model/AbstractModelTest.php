@@ -274,10 +274,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, $rowsAfetados, "Valor de linhas retornadas invalidas");
         
-        // Se realmente exclui o registro
-        $select = new Select($this->tableNameTest);
-        $select->where(array('foo' => 2));
-        $statement = $this->adapter->createStatement($select->getSqlString());
+        $statement = $this->adapter->query('SELECT "table_test".* FROM "table_test" WHERE foo = 2', Adapter::QUERY_MODE_PREPARE);
         $dataSource = $statement->execute();
         $this->assertEquals(0, $dataSource->count(), "Não excluiu o registro");
     }
@@ -367,20 +364,6 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $rowsAfetados = $this->model->update($myEntity);
     
         $this->assertEquals(1, $rowsAfetados, "Valor de linhas retornadas invalidas");
-    
-        // Se realmente exclui o registro
-        $select = new Select($this->tableNameTest);
-        $select->where(array('foo' => 2));
-        $statement = $this->adapter->createStatement($select->getSqlString());
-        $dataSource = $statement->execute();
-        $this->assertEquals(1, $dataSource->count(), "Não excluiu o registro");
-        
-        $expected = array(
-            'foo' => '2',
-            'bar' => 'trocar o valor',
-            'poliforlismo' => null,
-        );
-        $this->assertEquals($expected, $dataSource->current(), "Retorno invalido");
     }
     
     /**
