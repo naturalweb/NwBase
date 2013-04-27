@@ -1,10 +1,9 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
  *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
  */
 namespace NwBase\Paginator\Adapter;
 
@@ -13,18 +12,23 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\TableGateway\TableGateway;
 
 /**
- * @category   Zend
- * @package    Zend_Paginator
+ * Adapter do Paginator para trabalhar com objeto TableGateway
+ *
+ * @category   NwBase
+ * @package    NwBase\Paginator
  * @subpackage Adapter
- * @group      Zend_Paginator
+ * @author     Renato Moura <renato@naturalweb.com.br>
  */
 class DbTableGateway extends DbSelect
 {
     /**
      * Construnct
      * 
-     * @param TableGateway                $tableGateway
-     * @param Where|\Closure|string|array $where
+     * @param TableGateway                $tableGateway Objeto TableGateway
+     * @param Where|\Closure|string|array $where        Condição da busca
+     * @param array|string                $order        Ordenação
+     * 
+     * @return void
      */
     public function __construct(TableGateway $tableGateway, $where = null, $order = null)
     {

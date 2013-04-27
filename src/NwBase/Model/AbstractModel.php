@@ -2,9 +2,8 @@
 /**
  * Natural Web Ltda. (http://www.naturalweb.com.br)
  *
- * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
- * @license    BSD-3-Clause
- * @package    NwBase\Model
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
  */
 namespace NwBase\Model;
 
@@ -188,6 +187,8 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * Cache do metadata
      * 
      * @param CacheStorageInterface $metadataCache Cache do Metadata
+     * 
+     * @return void
      */
     public function setMetadataCache(CacheStorageInterface $metadataCache)
     {
@@ -235,7 +236,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Set Objeto TableGateway Manualmente
      *
-     * @param TableGateway
+     * @param TableGateway $tableGateway Obj TableGateway
+     * 
+     * @return InterfaceModel
      */
     public function setTableGateway(TableGateway $tableGateway)
     {
@@ -285,7 +288,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
     
     /**
-     * Retorna nome do Tabela do database
+     * Retorna nome do Tabela no database
      * 
      * @return string
      */

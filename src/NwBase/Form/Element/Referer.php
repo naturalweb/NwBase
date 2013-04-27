@@ -1,12 +1,10 @@
 <?php
 /**
  * Natural Web Ltda. (http://www.naturalweb.com.br)
-*
-* @copyright Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
-* @license   BSD-3-Clause
-* @package   NwBase\Form\Element
-*/
-
+ *
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
+ */
 namespace NwBase\Form\Element;
 
 use Zend\Form\Element;

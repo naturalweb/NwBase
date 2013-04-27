@@ -2,9 +2,8 @@
 /**
  * Natural Web Ltda. (http://www.naturalweb.com.br)
  *
- * @copyright Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
- * @license   BSD-3-Clause
- * @package   NwBase\Entity
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
  */
 namespace NwBase\Entity;
 
@@ -37,7 +36,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     protected $_serviceLocator = null;
     
     /**
-     * Construct
+     * Construct, recebe os dados caso seja necessario
      * 
      * @param array|object $data Dados de Entrada
      */
@@ -47,11 +46,11 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     }
     
     /**
-     * Set property's
+     * Set todas as propriedades existente na entidade
      * 
      * @param array|object $data Dados de Entrada
      * 
-     * @return this
+     * @return InterfaceEntity
      */
     public function exchangeArray($data)
     {
@@ -93,7 +92,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     }
     
     /**
-     * Retorna os dados como um string
+     * Retorna os dados como uma string
      *
      * @return string
      */
@@ -138,7 +137,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      * 
      * @final
      * @throws \InvalidArgumentException
-     * @return this
+     * @return InterfaceEntity
      */
     final public function setProperty($property, $value)
     {

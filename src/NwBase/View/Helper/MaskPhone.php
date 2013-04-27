@@ -2,10 +2,8 @@
 /**
  * Natural Web Ltda. (http://www.naturalweb.com.br)
  *
- * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
- * @license    BSD-3-Clause
- * @package    NwBase\View
- * @subpackage Helper
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
  */
 namespace NwBase\View\Helper;
 

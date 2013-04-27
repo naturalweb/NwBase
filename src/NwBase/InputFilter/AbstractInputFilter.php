@@ -2,9 +2,8 @@
 /**
  * Natural Web Ltda. (http://www.naturalweb.com.br)
  *
- * @copyright Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
- * @license   BSD-3-Clause
- * @package   NwBase\InputFilter
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
  */
 namespace NwBase\InputFilter;
 
@@ -61,7 +60,7 @@ abstract class AbstractInputFilter extends InputFilter implements ServiceLocator
     /**
      * Set dbAdapter instance
      * 
-     * @param Adapter $dbAdapter
+     * @param Adapter $dbAdapter Adapter do Database
      * 
      * @return \NwBase\InputFilter\AbstractInputFilter
      */

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
+ */
+
 return array(
     'view_helpers' => array(
         'invokables' => array(

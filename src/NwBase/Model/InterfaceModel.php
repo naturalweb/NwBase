@@ -2,9 +2,8 @@
 /**
  * Natural Web Ltda. (http://www.naturalweb.com.br)
  *
- * @copyright  Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
- * @license    BSD-3-Clause
- * @package    NwBase\Model
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
  */
 namespace NwBase\Model;
 
@@ -18,39 +17,67 @@ namespace NwBase\Model;
 interface InterfaceModel
 {
     /**
+     * Retorna nome do Tabela no database
+     * 
      * @return string
      */
     public function getTableName();
     
     /**
+     * Retorna nome do Schema do database
+     *
+     * @return string
+     */
+    public function getSchemaName();
+    
+    /**
+     * Retorna o object TableIdentifier, identifica a tabela
+     *
+     * @return \Zend\Db\Sql\TableIdentifier
+     */
+    public function getTableIdentifier();
+    
+    /**
+     * Objeto TableGateway
+     *  
      * @return \Zend\Db\TableGateway\TableGateway
      */
     public function getTableGateway();
     
     /**
-     * @param undined $where
+     * Cria o objeto Select baseado no argumentos
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
      *
      * @return \Zend\Db\Sql\Select
      */
     public function getSelect($where = null, $order = null, $limit = null, $offset = null);
     
     /**
-     *
+     * Retorna o resultado da busca no objeto ResultSet
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
+     * @param string|array                $order Ordenação
+     * 
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAll($where = null);
+    public function fetchAll($where = null, $order = null);
     
     /**
-     * @param mixed $where
+     * Busca o primeiro registro da condição da busca
+     * 
+     * @param Where|\Closure|string|array $where Condição da Busca
      *
-     * @return 
+     * @return \NwBase\Entity\InterfaceEntity 
      */
     public function fetchRow($where);
     
     /**
-     * @param int $id
+     * Faz a busca pela coluna(s) de chave primary
+     * 
+     * @param int|array $id valor do ID
      *
-     * @return 
+     * @return \NwBase\Entity\InterfaceEntity
      */
     public function findById($id);
 }
