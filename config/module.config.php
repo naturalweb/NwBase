@@ -17,6 +17,7 @@ return array(
             'maskCpf'         => 'NwBase\View\Helper\MaskCpf',
             'maskPhone'       => 'NwBase\View\Helper\MaskPhone',
             'truncateString'  => 'NwBase\View\Helper\Truncate',
+            'markdown'        => 'NwBase\View\Helper\Markdown',
         ),
     ),
 );
