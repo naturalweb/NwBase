@@ -39,7 +39,7 @@ class UniqueField extends NoRecordExists
                     $value_exclude = $context[$primary_field];
                 }
                 
-                $this->exclude['value'] = $value_exclude;
+                $this->exclude['value'] = (int) $value_exclude;
             }
         }
         
