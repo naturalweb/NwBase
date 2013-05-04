@@ -25,6 +25,21 @@ use NwBase\Entity\Hydrator\HydratorEntity;
 abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInterface
 {
     /**
+     * @var boolean
+     */
+    protected $_stored = null;
+    
+    /**
+     * @var boolean
+     */
+    protected $_storedClean = null;
+    
+    /**
+     * @var array
+     */
+    protected $_modified = array();
+    
+    /**
      * @var HydratorInterface
      */
     protected $_hydrator = null;
@@ -38,11 +53,17 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     /**
      * Construct, recebe os dados caso seja necessario
      * 
-     * @param array|object $data Dados de Entrada
+     * @param array|object $data   Dados de Entrada Padrão
+     * @param boolean      $stored Flag se os dados estaão armazenados
      */
-    public function __construct($data = array())
+    public function __construct($data = array(), $stored = false)
     {
-        $this->exchangeArray($data);
+        $this->_stored = (boolean) $stored;
+        $this->_storedClean  = (boolean) $stored;
+        
+        if (count($data)) {
+            $this->exchangeArray($data);
+        }
     }
     
     /**
