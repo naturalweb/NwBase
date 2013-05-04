@@ -277,4 +277,35 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     	$this->assertEquals($services, $entity->getServiceLocator());
     	$this->assertAttributeEquals($services, '_serviceLocator', $entity);
     }
+    
+    public function testConstrutorSetStoredAndGetStored()
+    {
+        $stored = true;
+        $entity = new FooBarEntity(array(), $stored);
+        
+        $this->assertAttributeEquals(true, '_stored', $entity);
+        $this->assertAttributeEquals(true, '_storedClean', $entity);
+        $this->assertTrue($entity->getStored());
+        
+        $entity->exchangeArray(array());
+        $this->assertAttributeEquals(false, '_storedClean', $entity);
+    }
+    
+    public function testStoredCleanAndModified()
+    {
+        $entity = new FooBarEntity(array(), true);
+        
+        $entity->setProperty('foo', 'teste1');
+        $this->assertTrue($entity->hasModified('foo'));
+        
+        $entity->setProperty('bar', 'teste1');
+        $this->assertTrue($entity->hasModified('bar'));
+        
+        $this->assertAttributeEquals(array('foo', 'bar'), '_modified', $entity);
+        $this->assertEquals(array('foo', 'bar'), $entity->getModified());
+        
+        $entity->clearModified();
+        $this->assertAttributeEquals(false, '_storedClean', $entity);
+        $this->assertFalse($entity->hasModified('foo'));
+    }
 }

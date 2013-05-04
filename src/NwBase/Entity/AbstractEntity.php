@@ -67,6 +67,61 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     }
     
     /**
+     * Retorna se a entidade esta armazenado
+     *
+     * @return boolean
+     */
+    public function getStored()
+    {
+        return (boolean) $this->_stored;
+    }
+    
+    /**
+     * Retorna o array  com as propriedade modificadas
+     *
+     * @return array
+     */
+    public function getModified()
+    {
+        return $this->_modified;
+    }
+    
+    /**
+     * Set a propriedade modificada
+     *
+     * @return void
+     */
+    protected function setModified($property)
+    {
+        if (!$this->hasModified($property)) {
+            $this->_modified[] = $property;
+        }
+    }
+    
+    /**
+     * Valida se uma propriedade foi alterada do valor original
+     *
+     * @param string $property Nome da Propriedade
+     *
+     * @return boolean
+     */
+    public function hasModified($property)
+    {
+        return array_search($property, $this->_modified) !== false;
+    }
+    
+    /**
+     * Limpa a lista das propriedades modificadas
+     *
+     * @return void
+     */
+    public function clearModified()
+    {
+        $this->_modified = array();
+        $this->_storedClean  = false;
+    }
+    
+    /**
      * Set todas as propriedades existente na entidade
      * 
      * @param array|object $data Dados de Entrada
@@ -86,6 +141,10 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         
         if (is_array($data) && count($data) ) {
             $this->getHydrator()->hydrate($data, $this);
+        }
+        
+        if ($this->_stored && $this->_storedClean) {
+            $this->clearModified();
         }
         
         return $this;
@@ -183,7 +242,11 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     
         $value = $value!='' ? $value : null;
         $this->$property = $value;
-    
+        
+        if ($this->_stored) {
+            $this->setModified($property);
+        }
+        
         return $this;
     }
     
