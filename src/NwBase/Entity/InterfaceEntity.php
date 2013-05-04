@@ -19,6 +19,29 @@ use NwBase\Model\InterfaceModel;
 interface InterfaceEntity
 {
     /**
+     * Retorna se a entidade esta armazenado
+     *
+     * @return boolean
+     */
+    public function getStored();
+    
+    /**
+     * Retorna o array  com as propriedade modificadas
+     *
+     * @return array
+     */
+    public function getModified();
+    
+    /**
+     * Valida se uma propriedade foi alterada do valor original
+     *
+     * @param string $property Nome da Propriedade
+     *
+     * @return boolean
+     */
+    public function hasModified($property);
+    
+    /**
      * Set todas as propriedades existente na entidade
      * 
      * @param array $data Dados de Entrada
