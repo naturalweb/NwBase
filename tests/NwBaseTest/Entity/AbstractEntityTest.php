@@ -295,14 +295,19 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     {
         $entity = new FooBarEntity(array(), true);
         
-        $entity->setProperty('foo', 'teste1');
+        $expected = array(
+            'foo' => 'teste1',
+            'bar' => 'teste2',
+        );
+        
+        $entity->setProperty('foo', $expected['foo']);
         $this->assertTrue($entity->hasModified('foo'));
         
-        $entity->setProperty('bar', 'teste1');
+        $entity->setProperty('bar', $expected['bar']);
         $this->assertTrue($entity->hasModified('bar'));
         
-        $this->assertAttributeEquals(array('foo', 'bar'), '_modified', $entity);
-        $this->assertEquals(array('foo', 'bar'), $entity->getModified());
+        $this->assertAttributeEquals($expected, '_modified', $entity);
+        $this->assertEquals($expected, $entity->getModified());
         
         $entity->clearModified();
         $this->assertAttributeEquals(false, '_storedClean', $entity);

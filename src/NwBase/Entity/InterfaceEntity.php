@@ -42,6 +42,13 @@ interface InterfaceEntity
     public function hasModified($property);
     
     /**
+     * Limpa a lista das propriedades modificadas
+     *
+     * @return void
+     */
+    public function clearModified();
+    
+    /**
      * Set todas as propriedades existente na entidade
      * 
      * @param array $data Dados de Entrada

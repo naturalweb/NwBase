@@ -656,20 +656,30 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $values = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($values);
-
             if (!count($where) || array_search(null, $where)!==false) {
                 throw new \Exception("Valor da chave primaria não definida");
             }
-
+            
             $entity->preUpdate($this);
             
             $values = $entity->getArrayCopy();
-            $return = $this->getTableGateway()->update($values, $where);
-
+            if ($entity->getStored()) {
+                $modified = $entity->getModified();
+                $values = array_intersect_key($values, $modified);
+            }
+            
+            $return = null;
+            
+            if (count($values)) {
+                $return = $this->getTableGateway()->update($values, $where);
+            }
+            
             $entity->postUpdate($this);
-
+            
+            $entity->clearModified();
+            
             return $return;
-
+            
         } catch (\Exception $e) {
             throw $e;
         }

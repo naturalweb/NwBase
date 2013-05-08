@@ -87,18 +87,6 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     }
     
     /**
-     * Set a propriedade modificada
-     *
-     * @return void
-     */
-    protected function setModified($property)
-    {
-        if (!$this->hasModified($property)) {
-            $this->_modified[] = $property;
-        }
-    }
-    
-    /**
      * Valida se uma propriedade foi alterada do valor original
      *
      * @param string $property Nome da Propriedade
@@ -107,7 +95,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function hasModified($property)
     {
-        return array_search($property, $this->_modified) !== false;
+        return array_key_exists($property, $this->_modified);
     }
     
     /**
@@ -244,7 +232,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         $this->$property = $value;
         
         if ($this->_stored) {
-            $this->setModified($property);
+            $this->_modified[$property] = $value;
         }
         
         return $this;
