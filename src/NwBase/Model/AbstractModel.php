@@ -623,6 +623,10 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             $entity->preInsert($this);
             
             $values = $entity->getArrayCopy();
+            $values = array_filter($values, function($val){
+                return !is_null($val);
+            });
+            
             $return = $this->getTableGateway()->insert($values);
             
             $entity->postInsert($this);
