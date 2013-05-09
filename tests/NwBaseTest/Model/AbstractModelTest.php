@@ -382,6 +382,35 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
     /**
      * @depends testAbstractModelConstructedSetAdapter
+     */
+    public function testCanUpdateAnRemoveValuesPrimaryKey()
+    {
+        $myEntity = new FooBarEntity(array('foo' => 2, 'bar' => 'original'), true);
+        $myEntity->setFoo('20');
+        $myEntity->setBar('trocar o valor');
+    
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array(), array(), '', false);
+    
+        $values = array('bar' => 'trocar o valor');
+        $where = array('foo = ?' => 20);
+        $mockTableGateway->expects($this->once())
+                         ->method('update')
+                         ->with($values, $where)
+                         ->will($this->returnValue(1));
+        
+        $mockTableGateway->expects($this->once())
+                         ->method('getTable')
+                         ->will($this->returnValue(new TableIdentifier($this->tableNameTest)));
+    
+        $this->model->setTableGateway($mockTableGateway);
+    
+        $rowsAfetados = $this->model->update($myEntity);
+    
+        $this->assertEquals(1, $rowsAfetados, "Valor de linhas retornadas invalidas");
+    }
+    
+    /**
+     * @depends testAbstractModelConstructedSetAdapter
      * @expectedException \Exception
      * @expectedExceptionMessage Valor da chave primaria não definida
      */

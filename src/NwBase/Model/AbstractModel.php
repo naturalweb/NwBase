@@ -664,7 +664,11 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $values = $entity->getArrayCopy();
             if ($entity->getStored()) {
-                $modified = $entity->getModified();
+                
+                // Busca os campos modificados, removendos as chaves primarias
+                $columnPrimary = array_flip($this->getColumnPrimary());
+                $modified = array_diff_key($entity->getModified(), $columnPrimary);
+                
                 $values = array_intersect_key($values, $modified);
             }
             
