@@ -229,10 +229,13 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         }
     
         $value = $value!='' ? $value : null;
-        $this->$property = $value;
         
-        if ($this->_stored) {
-            $this->_modified[$property] = $value;
+        if ($this->$property != $value) {
+            $this->$property = $value;
+            
+            if ($this->_stored) {
+                $this->_modified[$property] = $value;
+            }
         }
         
         return $this;
