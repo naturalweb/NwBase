@@ -260,9 +260,18 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         if (!$this->_metadataTable && $this->getAdapter() != null) {
             $metadataCache = $this->getMetadataCache();
             
-            // dsn;schema.table
+            // driver-[dsn|database];schema.table
             $parameters = $this->getAdapter()->getDriver()->getConnection()->getConnectionParameters();
-            $key = sprintf('%s;%s.%s', $parameters['dsn'], $this->getSchemaName(), $this->getTableName());
+            $driver = isset($parameters['driver']) ? $parameters['driver'] : 'pdo';
+            if (isset($parameters['dsn'])) {
+                $driver .= "-".$parameters['dsn'];
+            }
+            
+            if (isset($parameters['database'])) {
+                $driver .= "-".$parameters['database'];
+            }
+            
+            $key = sprintf('%s;%s.%s', $driver, $this->getSchemaName(), $this->getTableName());
             $key = md5($key);
             
             if (!$metadataCache || ($metadataCache && !$this->_metadataTable = $metadataCache->getItem($key, $success))) {

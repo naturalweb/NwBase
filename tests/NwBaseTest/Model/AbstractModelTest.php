@@ -540,7 +540,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $services = new ServiceManager();
         $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
         
-        $key = md5('sqlite::memory:;.table_test');
+        $key = md5('pdo_sqlite-sqlite::memory:;.table_test');
         $tableObject = $this->getMock('Zend\Db\Metadata\Object\TableObject', array(), array(), '', false);
         
         $cache = $this->getMock('Zend\Cache\Storage\StorageInterface');
@@ -559,7 +559,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $services = new ServiceManager();
         $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
     
-        $key = md5('sqlite::memory:;.table_test');
+        $key = md5('pdo_sqlite-sqlite::memory:;.table_test');
         $metadata = new Metadata($this->adapter);
         $metadataTable = $metadata->getTable($this->tableNameTest);
     
