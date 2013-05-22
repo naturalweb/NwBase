@@ -1,6 +1,6 @@
 <?php
 /**
- * NwManager
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
  * 
  * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
  */
