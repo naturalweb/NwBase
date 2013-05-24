@@ -8,7 +8,7 @@
 namespace NwBase\Form\View\Helper;
 
 use Zend\Form\View\Helper\FormTextarea;
-use Zend\Form\Element\Textarea as ElementTextarea;
+use Zend\Form\Element\ElementInterface;
 use Zend\Form\Exception;
 
 /**
@@ -29,12 +29,12 @@ class FormCkeditor extends FormTextarea
     /**
      * Render a form <textarea> element from the provided $element
      *
-     * @param ElementTextarea $element Element Form
+     * @param ElementInterface $element Element Form
      * 
      * @throws Exception\DomainException
      * @return string
      */
-    public function render(ElementTextarea $element)
+    public function render(ElementInterface $element)
     {
         self::$instances += 1;
         
