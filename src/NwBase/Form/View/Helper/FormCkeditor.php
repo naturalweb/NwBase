@@ -1,10 +1,24 @@
 <?php
-namespace Application\Form\View\Helper;
+/**
+ * Natural Web Ltda. (http://www.naturalweb.com.br)
+ *
+ * @copyright 2013 - Copyright (c) Natural Web Ltda. (http://www.naturalweb.com.br)
+ * @license   BSD-3-Clause http://opensource.org/licenses/BSD-3-Clause
+ */
+namespace NwBase\Form\View\Helper;
 
 use Zend\Form\View\Helper\FormTextarea;
 use Zend\Form\Element\Textarea as ElementTextarea;
 use Zend\Form\Exception;
 
+/**
+ * Classe abstrata para criação de Form
+ *
+ * @category NwBase
+ * @package  NwBase\Form\View\Helper
+ * @author   Renato Moura <renato@naturalweb.com.br>
+ * @todo     CRIAR TESTES - PHPUNIT
+ */
 class FormCkeditor extends FormTextarea
 {
     /**
@@ -15,7 +29,8 @@ class FormCkeditor extends FormTextarea
     /**
      * Render a form <textarea> element from the provided $element
      *
-     * @param  ElementTextarea $element
+     * @param ElementTextarea $element Element Form
+     * 
      * @throws Exception\DomainException
      * @return string
      */
@@ -50,9 +65,10 @@ class FormCkeditor extends FormTextarea
     }
     
     /**
-     * Define o tipo do editor
+     * Define o tipo do editor, e suas configurações predefinidas
      * 
-     * @param unknown $tipo
+     * @param string $tipo Tipo do toolbar
+     * 
      * @return string
      */
     private function tipoEditor($tipo)
