@@ -19,6 +19,7 @@ return array(
             'truncateString'  => 'NwBase\View\Helper\Truncate',
             'markdown'        => 'NwBase\View\Helper\Markdown',
             'bbcode'          => 'NwBase\View\Helper\BBCode',
+            'formCkeditor'    => 'NwBase\Form\View\Helper\FormCkeditor',
         ),
     ),
 );
