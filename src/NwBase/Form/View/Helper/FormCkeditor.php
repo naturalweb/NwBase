@@ -8,7 +8,7 @@
 namespace NwBase\Form\View\Helper;
 
 use Zend\Form\View\Helper\FormTextarea;
-use Zend\Form\Element\ElementInterface;
+use Zend\Form\ElementInterface;
 use Zend\Form\Exception;
 
 /**
