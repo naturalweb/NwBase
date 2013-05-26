@@ -209,30 +209,33 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     final public function setProperty($property, $value)
     {
-        // Valida se existe a propriedade, caso contrario gera a excessão
+        // Valida se existe a propriedade, caso contrario gera a exceção
         if (!property_exists($this, $property)) {
             $msg = sprintf('Propriedade "%s" inválida', $property);
             throw new \InvalidArgumentException($msg);
         }
         
-        // Verifica se existe um metodo "SET" da propriedade, e executa a mesma
-        $words = array_map('ucfirst', explode("_", $property));
-        $method = "set";
-        $method .= implode("", $words);
-        if (method_exists($this, $method)) {
-            return $this->$method($value);
-        }
-    
-        // Seta a propriedade conforme a necessidade
+        // Filtra o valor, removendo os espaços e define null para string vazias
         if (is_string($value)) {
             $value = trim($value);
         }
-    
+        
         $value = $value!='' ? $value : null;
         
+        // Verifica se o valor informado para setar é diferente do atual
+        // para relamente fazer a modificação 
         if ($this->$property != $value) {
-            $this->$property = $value;
             
+            // Verifica se existe um metodo "SET" da propriedade, e executa a mesma inves de setar manualmente o valor
+            $words = array_map('ucfirst', explode("_", $property));
+            $method = "set";
+            $method .= implode("", $words);
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            } else {
+                $this->$property = $value;
+            }
+        
             if ($this->_stored) {
                 $this->_modified[$property] = $value;
             }
