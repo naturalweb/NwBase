@@ -631,7 +631,10 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $entity->preInsert($this);
             
+            $columns = array_flip($this->getColumnsNames());
+            
             $values = $entity->getArrayCopy();
+            $values = array_intersect_key($values, $columns);
             $values = array_filter($values, function($val){
                 return !is_null($val);
             });
@@ -673,9 +676,11 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
                 throw new \Exception("Valor da chave primaria não definida");
             }
             
-            $values = $entity->getArrayCopy();
+            // Somente os valores que campos que existe no metadata
+            $columns = array_flip($this->getColumnsNames());
+            $values = array_intersect_key($values, $columns);
+            
             if ($entity->getStored()) {
-                
                 
                 $columnPrimary = $this->getColumnPrimary();
                 $modified = $entity->getModified();
