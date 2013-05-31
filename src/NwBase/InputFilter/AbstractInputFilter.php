@@ -11,7 +11,6 @@ use NwBase\AwareInterface\PrepareAwareInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Adapter\Adapter;
 
 /**
@@ -22,7 +21,7 @@ use Zend\Db\Adapter\Adapter;
  * @author   Renato Moura <renato@naturalweb.com.br>
  * @abstract
  */
-abstract class AbstractInputFilter extends InputFilter implements ServiceLocatorAwareInterface, AdapterAwareInterface, PrepareAwareInterface
+abstract class AbstractInputFilter extends InputFilter implements ServiceLocatorAwareInterface, PrepareAwareInterface
 {
     /** 
      * @var ServiceLocatorInterface
@@ -77,6 +76,10 @@ abstract class AbstractInputFilter extends InputFilter implements ServiceLocator
      */
     public function getDbAdapter()
     {
+        if (!$this->dbAdapter) {
+            $this->dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        }
+        
         return $this->dbAdapter;
     }
 }
