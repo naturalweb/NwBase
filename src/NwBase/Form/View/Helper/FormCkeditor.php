@@ -92,7 +92,7 @@ class FormCkeditor extends FormTextarea
     	            autoGrow_maxHeight: 800,
                     autoGrow_minHeight: 300,
                     removePlugins: 'resize,bidi,dialogadvtab,div,flash,format,forms,horizontalrule,iframe,justify,liststyle,pagebreak,showborders,stylescombo,table,tabletools,templates',
-                    fontSize_sizes: '30/30%;50/50%;100/100%;120/120%;150/150%;200/200%;300/300%;400/400%',
+                    fontSize_sizes: '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;22/22px;24/24px;26/26px;28/28px;29/29px',
                     toolbar: [
                         [ 'Source' ],
                         [ 'Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo' ],

@@ -30,20 +30,11 @@ class BBCode extends AbstractHelper
     {
         if ($escape) {
             $text = $this->view->escapeHtml($text);
+            $text = str_replace('&quot;', '"', $text);
         }
         
-        $code = new Decoda\Decoda();
-        $code->addFilter(new Decoda\Filter\DefaultFilter());
-        $code->addFilter(new Decoda\Filter\BlockFilter());
-        $code->addFilter(new Decoda\Filter\CodeFilter());
-        $code->addFilter(new Decoda\Filter\EmailFilter());
-        $code->addFilter(new Decoda\Filter\ImageFilter());
-        $code->addFilter(new Decoda\Filter\ListFilter());
-        $code->addFilter(new Decoda\Filter\QuoteFilter());
-        $code->addFilter(new Decoda\Filter\TextFilter());
-        $code->addFilter(new Decoda\Filter\UrlFilter());
-        $code->addFilter(new Decoda\Filter\VideoFilter());
-        $code->reset($text);
+        $code = new Decoda\Decoda($text);
+        $code->defaults();
         
         return $code->parse();
     }
