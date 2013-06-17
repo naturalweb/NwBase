@@ -13,6 +13,7 @@ use Zend\Db\Metadata\Metadata;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\TableIdentifier;
@@ -160,6 +161,40 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $resultSet->setArrayObjectPrototype($prototype);
         
         $return = $this->model->fetchAll();
+        $this->assertInstanceOf('Zend\Db\ResultSet\ResultSet', $return);
+        $this->assertEquals($resultSet, $return);
+    }
+    
+    /**
+     * @depends testMetodoFetchAllDaAbstractModel
+     */
+    public function testMethodFetchAllWitchParameters()
+    {
+        $prototype = new FooBarEntity();
+        
+        $where   = array('foo > ?' => '1');
+        $order   = 'bar ASC';
+        $columns = array('foo', 'bar');
+        
+        $select = new Select($this->tableNameTest);
+        $select->where($where);
+        
+        $select->reset(Select::ORDER);
+        $select->order($order);
+        
+        $select->reset(Select::COLUMNS);
+        $select->columns($columns);
+        
+        $sql = new Sql($this->adapter, $this->tableNameTest);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        
+        $dataSource = $statement->execute();
+    
+        $resultSet = new ResultSet();
+        $resultSet->initialize($dataSource);
+        $resultSet->setArrayObjectPrototype($prototype);
+    
+        $return = $this->model->fetchAll($where, $order, $columns);
         $this->assertInstanceOf('Zend\Db\ResultSet\ResultSet', $return);
         $this->assertEquals($resultSet, $return);
     }

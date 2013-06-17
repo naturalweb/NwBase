@@ -448,14 +448,21 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * 
      * @param Where|\Closure|string|array $where Condição da Busca
      * @param string|array                $order Ordenação
+     * @param array                       $columns Colunas
      * 
      * @return ResultSet
      */
-    public function fetchAll($where = null, $order = null)
+    public function fetchAll($where = null, $order = null, array $columns = null)
     {
-        $select    = $this->getSelect($where, $order);
+        $select = $this->getSelect($where, $order);
+        
+        if (count($columns)) {
+            $select->reset(Select::COLUMNS);
+            $select->columns($columns);
+        }
+        
         $resultSet = $this->getTableGateway()->selectWith($select);
-
+        
         return $resultSet;
     }
 
