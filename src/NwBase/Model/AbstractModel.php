@@ -676,6 +676,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     public function update(InterfaceEntity $entity)
     {
         try {
+            $entity->preUpdate($this);
             
             $values = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($values);
@@ -703,8 +704,6 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
 
             $return = null;
             
-            $entity->preUpdate($this);
-            
             if (count($values)) {
                 $return = $this->getTableGateway()->update($values, $where);
             }
@@ -731,6 +730,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     public function delete(InterfaceEntity $entity)
     {
         try {
+            $entity->preDelete($this);
             
             $values = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($values);
@@ -739,7 +739,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
                 throw new \Exception("Valor da chave primaria não definida");
             }
             
-            ///Validando se chave primaria da entidade nao foi alterada
+            //Validando se chave primaria da entidade nao foi alterada ao tentar excluir
             $columnPrimary = $this->getColumnPrimary();
             $modified = $entity->getModified();
             
@@ -747,8 +747,6 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
                 $message = sprintf('Os campos "%s" não podem ser alterados por serem chave(s) primaria(s)', implode(', ', $columnPrimary));
                 throw new \Exception($message);
             }
-            
-            $entity->preDelete($this);
 
             $return = $this->getTableGateway()->delete($where);
 
