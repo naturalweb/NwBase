@@ -312,4 +312,14 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(false, '_storedClean', $entity);
         $this->assertFalse($entity->hasModified('bar'));
     }
+    
+    public function testModifiedWithPropertyChange()
+    {
+        $entity = new FooBarEntity(array('foo' => 2, 'bar' => 'BAZ'), true);
+        
+        $entity->setProperty('bar', "alterado");       
+        $entity->setProperty('bar', "BAZ");
+        
+        $this->assertFalse($entity->hasModified('bar'));
+    }
 }

@@ -37,6 +37,11 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     /**
      * @var array
      */
+    protected $_defaultValues = array();
+    
+    /**
+     * @var array
+     */
     protected $_modified = array();
     
     /**
@@ -107,6 +112,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     {
         $this->_modified = array();
         $this->_storedClean  = false;
+        $this->_defaultValues = $this->getArrayCopy();
     }
     
     /**
@@ -222,22 +228,24 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         
         $value = $value!='' ? $value : null;
         
-        // Verifica se o valor informado para setar é diferente do atual
-        // para relamente fazer a modificação 
-        if ($this->$property != $value) {
-            
-            // Verifica se existe um metodo "SET" da propriedade, e executa a mesma inves de setar manualmente o valor
-            $words = array_map('ucfirst', explode("_", $property));
-            $method = "set";
-            $method .= implode("", $words);
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            } else {
-                $this->$property = $value;
-            }
+        // Verifica se existe um metodo "SET" da propriedade, e executa a mesma inves de setar manualmente o valor
+        $words = array_map('ucfirst', explode("_", $property));
+        $method = "set";
+        $method .= implode("", $words);
+        if (method_exists($this, $method)) {
+            $this->$method($value);
+        } else {
+            $this->$property = $value;
+        }
         
-            if ($this->_stored) {
+        // Verifica se o valor informado para setar é diferente do atual
+        // para relamente fazer a modificação
+        if ($this->_stored) { 
+            if (!isset($this->_defaultValues[$property]) || $this->_defaultValues[$property] != $this->$property) {
                 $this->_modified[$property] = $value;
+                
+            } elseif (isset($this->_modified[$property])) {
+                unset($this->_modified[$property]);
             }
         }
         
