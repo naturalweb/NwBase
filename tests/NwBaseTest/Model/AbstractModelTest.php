@@ -146,6 +146,18 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * @depends testMetodoGetSelectDaAbstractModel
+     */
+    public function testMetodoGetSelectWithObjecSelect()
+    {
+        // Resultado
+        $whereSelect = new Select(new TableIdentifier($this->tableNameTest));
+        
+        $return = $this->model->getSelect($whereSelect);
+        $this->assertSame($whereSelect, $return);
+    }
+    
+    /**
      * @depends testAbstractModelConstructedSetAdapter
      */
     public function testMetodoFetchAllDaAbstractModel()

@@ -412,28 +412,35 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Cria o objeto Select baseado no argumentos
      * 
-     * @param Where|\Closure|string|array $where Condição da Busca
+     * @param Select|Where|\Closure|string|array $where Condição da Busca
      *
      * @return Select
      */
     public function getSelect($where = null, $order = null, $limit = null, $offset = null)
     {
-        $select = new Select($this->getTableIdentifier());
-
-        // Filtros
-        $select->where($where);
+        // Caso ja seja um select
+        if ($where instanceof Select) {
+            $select = $where;
+        } else {
+            $select = new Select($this->getTableIdentifier());
+            // Filtros
+            $select->where($where);
+        }
 
         // ORDENACAO DO SELECT
         if ( !empty($order) ) {
+            $select->reset(Select::ORDER);
             $select->order($order);
         }
 
         // Limit
         $limit = (int) $limit;
         if ($limit) {
+            $select->reset(Select::LIMIT);
             $select->limit($limit);
-
+            
             // Offset
+            $select->reset(Select::OFFSET);
             $offset = (int) $offset;
             if ($offset) {
                 $select->offset($offset);
@@ -446,9 +453,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Retorna o resultado da busca no objeto ResultSet
      * 
-     * @param Where|\Closure|string|array $where Condição da Busca
-     * @param string|array                $order Ordenação
-     * @param array                       $columns Colunas
+     * @param Select|Where|\Closure|string|array $where Condição da Busca
+     * @param string|array                       $order Ordenação
+     * @param array                              $columns Colunas
      * 
      * @return ResultSet
      */
@@ -469,7 +476,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Busca o primeiro registro da condição da busca
      * 
-     * @param Where|\Closure|string|array $where Condição da Busca
+     * @param Select|Where|\Closure|string|array $where Condição da Busca
      *
      * @return InterfaceEntity
      */
@@ -539,11 +546,11 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * Faz a listagem trazendo os dados pareados, um array em chave e valor utilizando o metodo fetchPairs
      * Listando em pares key => value ex:(id, descricao)
      *
-     * @param string                      $columnKey     Campo da Chave / Valor
-     * @param string                      $columnValue   Campo da Descricao / texto
-     * @param Where|\Closure|string|array $where         OPTIONAL Condição da busca
-     * @param array                       $order         OPTIONAL Campos default a serem inseridas
-     * @param array                       $valuesDefault OPTIONAL Inseriri no inicio como default
+     * @param string                             $columnKey     Campo da Chave / Valor
+     * @param string                             $columnValue   Campo da Descricao / texto
+     * @param Select|Where|\Closure|string|array $where         OPTIONAL Condição da busca
+     * @param array                              $order         OPTIONAL Campos default a serem inseridas
+     * @param array                              $valuesDefault OPTIONAL Inseriri no inicio como default
      *
      * @return ResultSetPairs
      */
@@ -570,13 +577,14 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     /**
      * Conta a quantidade de registro pela condição
      * 
-     * @param Where|\Closure|string|array $where Condição da Busca
+     * @param Select|Where|\Closure|string|array $where Condição da Busca
      *
      * @return int
      */
     public function count($where = null)
     {
         $select = $this->getSelect($where);
+        $select->reset(Select::ORDER);
         $select->reset(Select::COLUMNS);
         $select->reset(Select::LIMIT);
         $select->reset(Select::OFFSET);
