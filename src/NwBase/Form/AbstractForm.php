@@ -10,7 +10,7 @@ namespace NwBase\Form;
 use NwBase\AwareInterface\PrepareAwareInterface;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
 /**
  * Classe abstrata para criação de Form
@@ -22,32 +22,5 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 abstract class AbstractForm extends Form implements ServiceLocatorAwareInterface, PrepareAwareInterface
 {
-    /**
-     * 
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator = null;
-    
-    /**
-     * Set serviceManager instance
-     *
-     * @param ServiceLocatorInterface $serviceLocator Objeto de Service
-     * 
-     * @return void
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-    
-    /**
-     * Retrieve serviceManager instance
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
+    use ServiceLocatorAwareTrait;
 }

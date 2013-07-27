@@ -16,7 +16,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\Cache\Storage\StorageInterface as CacheStorageInterface;
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
@@ -32,6 +32,8 @@ use NwBase\Db\ResultSet\ResultSetPairs;
  */
 abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInterface
 {
+    use ServiceLocatorAwareTrait;
+    
     /** 
      * @var string
      */
@@ -51,12 +53,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * @var array
      */
     private $_columns = null;
-    
-    /** 
-     * @var ServiceLocatorInterface
-     */
-    protected $_serviceLocator;
-    
+        
     /**
      * @var Adapter
      */
@@ -110,30 +107,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             throw new \LogicException("Table name not found");
         }
     }
-    
-    /**
-     * Set serviceManager instance
-     *
-     * @param ServiceLocatorInterface $serviceLocator Object Service
-     * 
-     * @return void
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->_serviceLocator = $serviceLocator;
-        return $this;
-    }
-    
-    /**
-     * Retrieve serviceManager instance
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->_serviceLocator;
-    }
-    
+        
     /**
      * Retorna o Adapter do database
      * 

@@ -10,7 +10,7 @@ namespace NwBase\InputFilter;
 use NwBase\AwareInterface\PrepareAwareInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\Db\Adapter\Adapter;
 
 /**
@@ -23,39 +23,13 @@ use Zend\Db\Adapter\Adapter;
  */
 abstract class AbstractInputFilter extends InputFilter implements ServiceLocatorAwareInterface, PrepareAwareInterface
 {
-    /** 
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator = null;
+    use ServiceLocatorAwareTrait;
     
     /** 
      * @var Adapter
      */
     protected $dbAdapter = null;
-    
-    /**
-     * Set serviceManager instance
-     *
-     * @param ServiceLocatorInterface $serviceLocator Objeto de Service
-     * 
-     * @return \NwBase\InputFilter\AbstractInputFilter
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-    
-    /**
-     * Retrieve serviceManager instance
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-    
+        
     /**
      * Set dbAdapter instance
      * 

@@ -512,13 +512,13 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
     
         $model = new FooBarModel();
     
-        $this->assertAttributeEmpty("_serviceLocator", $model);
+        $this->assertAttributeEmpty("serviceLocator", $model);
         
         $model->setServiceLocator($services);
         
         // Service
         $this->assertEquals($services, $model->getServiceLocator());
-        $this->assertAttributeEquals($services, '_serviceLocator', $model);
+        $this->assertAttributeEquals($services, 'serviceLocator', $model);
     }
     
     public function testSetTableGateway()
@@ -558,7 +558,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         
         // Service
         $this->assertEquals($services, $model->getServiceLocator());
-        $this->assertAttributeEquals($services, '_serviceLocator', $model);
+        $this->assertAttributeEquals($services, 'serviceLocator', $model);
     
         // Adapter
         $this->assertEquals($this->adapter, $model->getAdapter());
