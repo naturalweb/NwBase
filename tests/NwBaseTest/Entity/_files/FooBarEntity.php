@@ -28,4 +28,24 @@ class FooBarEntity extends AbstractEntity
         $return = sprintf("FOO: %s, BAR: %s", $this->foo, $this->bar);
         return $return;
     }
+    
+    /**
+     * Retorna id da entidade
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->foo;
+    }
+    
+    /**
+     * Retorna descrição da entidade
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->bar;
+    }
 }

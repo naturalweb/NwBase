@@ -19,6 +19,20 @@ use NwBase\Model\InterfaceModel;
 interface InterfaceEntity
 {
     /**
+     * Retorna id da entidade
+     *
+     * @return int
+     */
+    public function getId();
+    
+    /**
+     * Retorna descrição da entidade
+     *
+     * @return string
+     */
+    public function getDescription();
+    
+    /**
      * Retorna se a entidade esta armazenado
      *
      * @return boolean
