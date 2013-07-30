@@ -224,15 +224,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         
         $value = $value!='' ? $value : null;
         
-        // Verifica se existe um metodo "SET" da propriedade, e executa a mesma inves de setar manualmente o valor
-        $words = array_map('ucfirst', explode("_", $property));
-        $method = "set";
-        $method .= implode("", $words);
-        if (method_exists($this, $method)) {
-            $this->$method($value);
-        } else {
-            $this->$property = $value;
-        }
+        $this->$property = $value;
         
         // Verifica se o valor informado para setar é diferente do atual
         // para relamente fazer a modificação
@@ -293,15 +285,23 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
             $msg = sprintf('Metodo "%s" inválido', $method);
             throw new \BadMethodCallException($msg);
         }
-    
+        
         $property = preg_replace('/([A-Z])/', '_\\1', $matches[2]);
         $property = trim($property, '_');
         $property = strtolower($property);
-    
+        
         switch ($matches[1]) {
             case 'set':
-                $args = (array) $args;
-                return $this->setProperty($property, array_shift($args));
+                $args  = (array) $args;
+                $value = array_shift($args);
+                
+                // Verifica se existe um metodo "SET" da propriedade, 
+                // e executa a mesma inves de setar manualmente o valor
+                if (method_exists($this, $method)) {
+                    return $this->$method($value);
+                } else {
+                    return $this->setProperty($property, $value);
+                }
                 break;
             case 'get':
                 return $this->__get($property);

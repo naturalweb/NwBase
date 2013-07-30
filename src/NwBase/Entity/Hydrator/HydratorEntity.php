@@ -38,8 +38,8 @@ class HydratorEntity extends Reflection
      * Hydrate an object by populating public properties
      * Hydrates an object by setting public properties of the object.
      *
-     * @param array  $data   Dados para inserir
-     * @param object $object Objeto
+     * @param array           $data   Dados para inserir
+     * @param InterfaceEntity $object Objeto
      * 
      * @throws Exception\BadMethodCallException for a non-object $object
      * @return object
@@ -56,7 +56,10 @@ class HydratorEntity extends Reflection
             $property = strtolower($property);
             if (property_exists($object, $property)) {
                 $value = $this->hydrateValue($property, $value);
-                $object->setProperty($property, $value);
+                $words = array_map('ucfirst', explode("_", $property));
+                $method = "set";
+                $method .= implode("", $words);
+                $object->__call($method, array($value));
             }
         }
         
