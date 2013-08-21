@@ -7,6 +7,15 @@ use Zend\Filter\FilterInterface;
 
 class TransliterationTest extends \PHPUnit_Framework_TestCase
 {
+    public function testStaticFilter()
+    {
+        $stringComAcento = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýýþÿŔŕ°ºª$";
+        $stringFiltrada = Transliteration::staticFilter($stringComAcento);
+        $stringEsperada = "AAAAAAACEEEEIIIIDNOOOOOOUUUUYBBaaaaaaaceeeeiiiidnoooooouuuuYYBYRrooaS";
+    
+        $this->assertEquals($stringEsperada, $stringFiltrada, "Acento nao foi retirado");
+    }
+    
 	public function testFiltraCaracterAcentuado()
 	{
 		$transliteration = new Transliteration();

@@ -19,11 +19,9 @@ use Zend\Filter\FilterInterface;
 class Transliteration implements FilterInterface
 {
     /**
-     * Metodo Filtra
-     *
-     * @return string
+     * Filtra acentuação
      */
-    public function filter($string)
+    public static function staticFilter($string)
     {
         $replace_pairs = array(
             'À' => 'A',
@@ -101,5 +99,15 @@ class Transliteration implements FilterInterface
         $string = strtr($string, $replace_pairs);
         
         return $string;
+    } 
+    
+    /**
+     * Metodo Filtra
+     *
+     * @return string
+     */
+    public function filter($string)
+    {
+        return self::staticFilter($string);
     }
 }
