@@ -27,22 +27,15 @@ class JsPush extends ZendJsPush
     protected $finishParameters;
     
     /**
-     * Set the finish method name
+     * Seta propriedade $finishParameters
      *
-     * @param  string $methodName
+     * @param string|array $parameters parâmetros
+     * 
      * @return \Zend\ProgressBar\Adapter\JsPush
      */
     public function setFinishParameters($parameters)
     {
-        if (is_array($parameters)) {
-            $parameters = Json::encode($parameters);
-            
-        } elseif (!is_scalar($parameters)) {
-            $parameters = null;
-        }
-        
-        $this->finishParameters = $parameters;
-        
+        $this->finishParameters = $this->validateParameters($parameters);
         return $this;
     }
     
@@ -50,12 +43,18 @@ class JsPush extends ZendJsPush
      * Defined by Zend\ProgressBar\Adapter\AbstractAdapter
      * Com os parametros de finish
      *
+     * @param string|array $parameters parâmetros
+     *
      * @return void
      */
-    public function finish()
+    public function finish($parameters=null)
     {
         if ($this->finishMethodName === null) {
             return;
+        }
+        
+        if (!is_null($parameters)) {
+            $this->setFinishParameters($parameters);
         }
         
         $data = '<script type="text/javascript">'
@@ -63,5 +62,24 @@ class JsPush extends ZendJsPush
         . '</script>';
         
         $this->_outputData($data);
+    }
+    
+    /**
+     * Valida os parâmetros
+     * 
+     * @param string|array $parameters parâmetros
+     * 
+     * @return string JSON encoded object
+     */
+    protected function validateParameters($parameters)
+    {
+        if (is_array($parameters)) {
+            $parameters = Json::encode($parameters);
+        
+        } elseif (!is_scalar($parameters)) {
+            $parameters = null;
+        }
+        
+        return $parameters;
     }
 }

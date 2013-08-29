@@ -3,6 +3,7 @@
 namespace NwBaseTest\ProgressBar\Adapter;
 
 use \PHPUnit_Framework_TestCase as TestCase;
+use \Zend\Json\Json;
 
 class JsPushTest extends TestCase
 {
@@ -58,6 +59,27 @@ class JsPushTest extends TestCase
         $data = json_decode($result[1], true);
         
         $this->assertEquals('foobar', $data['query']);
+    }
+    
+    public function testValidateParametersWithArray()
+    {
+        $parameters = array('foo' => 'bar');
+        $expected = Json::encode($parameters);
+        
+        $adapter = new JsPushStub();
+        $actual = $adapter->setFinishParameters($parameters);
+        
+        $this->assertAttributeEquals($expected, 'finishParameters', $actual);
+    }
+    
+    public function testValidateParametersWithString()
+    {
+        $parameters = 'foobar';
+    
+        $adapter = new JsPushStub();
+        $actual = $adapter->setFinishParameters($parameters);
+    
+        $this->assertAttributeEquals($parameters, 'finishParameters', $actual);
     }
 }
 
