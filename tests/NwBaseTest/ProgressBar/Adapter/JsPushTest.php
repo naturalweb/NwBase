@@ -15,7 +15,7 @@ class JsPushTest extends TestCase
         
         $return = $adapter->setFinishParameters($parameters);
         
-        $this->assertAttributeEquals(\Zend\Json\Json::encode($parameters), 'finishParameters', $adapter);
+        $this->assertAttributeEquals("'".\Zend\Json\Json::encode($parameters)."'", 'finishParameters', $adapter);
         $this->assertEquals($adapter, $return, "Deveria retornar a propria instancia");
     }
     
@@ -27,7 +27,7 @@ class JsPushTest extends TestCase
     
         $return = $adapter->setFinishParameters($parameters);
     
-        $this->assertAttributeEquals($parameters, 'finishParameters', $adapter);
+        $this->assertAttributeEquals("'".$parameters."'", 'finishParameters', $adapter);
         $this->assertEquals($adapter, $return, "Deveria retornar a propria instancia");
     }
     
@@ -39,7 +39,7 @@ class JsPushTest extends TestCase
     
         $return = $adapter->setFinishParameters($parameters);
     
-        $this->assertAttributeEquals(null, 'finishParameters', $adapter);
+        $this->assertAttributeEquals('\'\'', 'finishParameters', $adapter);
         $this->assertEquals($adapter, $return, "Deveria retornar a propria instancia");
     }
     
@@ -56,7 +56,7 @@ class JsPushTest extends TestCase
         
         $this->assertEquals(1, $matches);
         
-        $data = json_decode($result[1], true);
+        $data = json_decode(trim($result[1], "'"), true);
         
         $this->assertEquals('foobar', $data['query']);
     }
@@ -64,7 +64,7 @@ class JsPushTest extends TestCase
     public function testValidateParametersWithArray()
     {
         $parameters = array('foo' => 'bar');
-        $expected = Json::encode($parameters);
+        $expected = "'".Json::encode($parameters)."'";
         
         $adapter = new JsPushStub();
         $actual = $adapter->setFinishParameters($parameters);
@@ -79,7 +79,25 @@ class JsPushTest extends TestCase
         $adapter = new JsPushStub();
         $actual = $adapter->setFinishParameters($parameters);
     
-        $this->assertAttributeEquals($parameters, 'finishParameters', $actual);
+        $this->assertAttributeEquals("'".$parameters."'", 'finishParameters', $actual);
+    }
+    
+    public function testMethodEncerraWithParameters()
+    {
+        $parameters = array('query' => 'foobar');
+        
+        $adapter = new JsPushStub(array('finishMethodName' => 'Zend\ProgressBar\ProgressBar\Finish'));
+        $adapter->notify(0, 2, 0.5, 1, 1, 'status');
+        $adapter->encerra($parameters);
+        $output = $adapter->getLastOutput();
+        
+        $matches = preg_match('#<script type="text/javascript">parent.'. preg_quote('Zend\ProgressBar\ProgressBar\Finish') . '\((.*?)\);</script>#', $output, $result);
+        
+        $this->assertEquals(1, $matches);
+        
+        $data = json_decode(trim($result[1], "'"), true);
+        
+        $this->assertEquals('foobar', $data['query']);
     }
 }
 

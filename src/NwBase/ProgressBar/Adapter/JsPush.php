@@ -35,26 +35,21 @@ class JsPush extends ZendJsPush
      */
     public function setFinishParameters($parameters)
     {
-        $this->finishParameters = $this->validateParameters($parameters);
+        $this->finishParameters = "'".$this->validateParameters($parameters)."'";
         return $this;
     }
     
     /**
      * Defined by Zend\ProgressBar\Adapter\AbstractAdapter
-     * Com os parametros de finish
      *
      * @param string|array $parameters parâmetros
      *
      * @return void
      */
-    public function finish($parameters=null)
+    public function finish()
     {
         if ($this->finishMethodName === null) {
             return;
-        }
-        
-        if (!is_null($parameters)) {
-            $this->setFinishParameters($parameters);
         }
         
         $data = '<script type="text/javascript">'
@@ -81,5 +76,29 @@ class JsPush extends ZendJsPush
         }
         
         return $parameters;
+    }
+    
+    /**
+     * Semelhante ao método finish porém recebe parâmetros
+     *
+     * @param string|array $parameters parâmetros
+     *
+     * @return void
+     */
+    public function encerra($parameters=null)
+    {
+        if ($this->finishMethodName === null) {
+            return;
+        }
+    
+        if (!is_null($parameters)) {
+            $this->setFinishParameters($parameters);
+        }
+    
+        $data = '<script type="text/javascript">'
+        . 'parent.' . $this->finishMethodName . '(' . $this->finishParameters . ');'
+        . '</script>';
+    
+        $this->_outputData($data);
     }
 }
