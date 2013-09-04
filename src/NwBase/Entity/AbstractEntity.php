@@ -168,7 +168,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function toString()
     {
-        return '';
+        return $this->getDescription();
     }
     
     /**

@@ -99,10 +99,11 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
      */
     public function testRetornoMetodoToStringEmptyAbstract()
     {
-        $mockTest = $this->getMockForAbstractClass('NwBase\Entity\AbstractEntity', array('toString'));
+        $description = 'foobar-description';
+        $mockTest = $this->getMockForAbstractClass('NwBase\Entity\AbstractEntity');
+        $mockTest->expects($this->any())->method('getDescription')->will($this->returnValue($description));
         
-        $string = (string) $mockTest->toString();
-        $this->assertEmpty($string);
+        $this->assertSame($description, $mockTest->toString());
     }
     
     /**
