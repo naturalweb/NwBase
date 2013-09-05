@@ -15,7 +15,7 @@ class JsPushTest extends TestCase
         
         $return = $adapter->setFinishParameters($parameters);
         
-        $this->assertAttributeEquals("'".\Zend\Json\Json::encode($parameters)."'", 'finishParameters', $adapter);
+        $this->assertAttributeEquals(Json::encode($parameters), 'finishParameters', $adapter);
         $this->assertEquals($adapter, $return, "Deveria retornar a propria instancia");
     }
     
@@ -39,7 +39,7 @@ class JsPushTest extends TestCase
     
         $return = $adapter->setFinishParameters($parameters);
     
-        $this->assertAttributeEquals('\'\'', 'finishParameters', $adapter);
+        $this->assertAttributeEquals(null, 'finishParameters', $adapter);
         $this->assertEquals($adapter, $return, "Deveria retornar a propria instancia");
     }
     
@@ -64,7 +64,7 @@ class JsPushTest extends TestCase
     public function testValidateParametersWithArray()
     {
         $parameters = array('foo' => 'bar');
-        $expected = "'".Json::encode($parameters)."'";
+        $expected = Json::encode($parameters);
         
         $adapter = new JsPushStub();
         $actual = $adapter->setFinishParameters($parameters);

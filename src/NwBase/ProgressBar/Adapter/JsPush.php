@@ -35,7 +35,7 @@ class JsPush extends ZendJsPush
      */
     public function setFinishParameters($parameters)
     {
-        $this->finishParameters = "'".$this->validateParameters($parameters)."'";
+        $this->finishParameters = $this->validateParameters($parameters);
         return $this;
     }
     
@@ -68,10 +68,13 @@ class JsPush extends ZendJsPush
      */
     protected function validateParameters($parameters)
     {
-        if (is_array($parameters)) {
+         if (is_array($parameters)) {
             $parameters = Json::encode($parameters);
-        
-        } elseif (!is_scalar($parameters)) {
+            
+        } elseif (is_scalar($parameters)) {
+            $parameters = "'$parameters'";
+            
+        } else {
             $parameters = null;
         }
         
@@ -87,18 +90,10 @@ class JsPush extends ZendJsPush
      */
     public function encerra($parameters=null)
     {
-        if ($this->finishMethodName === null) {
-            return;
-        }
-    
         if (!is_null($parameters)) {
             $this->setFinishParameters($parameters);
         }
-    
-        $data = '<script type="text/javascript">'
-        . 'parent.' . $this->finishMethodName . '(' . $this->finishParameters . ');'
-        . '</script>';
-    
-        $this->_outputData($data);
+        
+        $this->finish();
     }
 }
