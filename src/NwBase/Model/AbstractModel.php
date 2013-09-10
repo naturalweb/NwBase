@@ -630,13 +630,16 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $return = $this->getTableGateway()->insert($values);
             
-            $entity->postInsert($this);
-            
-            // Seta o Id Primary caso exista
-            $lastInsertId = $this->getLastInsertValue();
-            $columnPrimary = $this->getColumnPrimary();
-            if ($lastInsertId) {
-                $entity->setProperty($columnPrimary[0], $lastInsertId);
+            if ($return) {
+                
+                // Seta a Column Primary caso seja Auto Increment
+                $lastInsertId = $this->getLastInsertValue();
+                $columnPrimary = $this->getColumnPrimary();
+                if ($lastInsertId) {
+                    $entity->setProperty($columnPrimary[0], $lastInsertId);
+                }
+                
+                $entity->postInsert($this);
             }
             
             return $return;
@@ -658,8 +661,6 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     public function update(InterfaceEntity $entity)
     {
         try {
-            $entity->preUpdate($this);
-            
             $values = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($values);
             if (!count($where) || array_search(null, $where)!==false) {
@@ -687,12 +688,17 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             $return = null;
             
             if (count($values)) {
+
+                $entity->preUpdate($this);
+                
                 $return = $this->getTableGateway()->update($values, $where);
+                
+                if ($return) {
+                    $entity->postUpdate($this);
+                }
+                
+                $entity->clearModified();
             }
-            
-            $entity->postUpdate($this);
-            
-            $entity->clearModified();
             
             return $return;
             
@@ -700,7 +706,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             throw $e;
         }
     }
-
+    
     /**
      * Excluir o registro da entity e o objeto
      * 
@@ -712,8 +718,6 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     public function delete(InterfaceEntity $entity)
     {
         try {
-            $entity->preDelete($this);
-            
             $values = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($values);
             
@@ -729,7 +733,9 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
                 $message = sprintf('Os campos "%s" não podem ser alterados por serem chave(s) primaria(s)', implode(', ', $columnPrimary));
                 throw new \Exception($message);
             }
-
+            
+            $entity->preDelete($this);
+            
             $return = $this->getTableGateway()->delete($where);
 
             $entity->postDelete($this);
