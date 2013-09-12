@@ -52,13 +52,11 @@ class CsvIterator extends FileIterator
      * 
      * @return array
      */
-    public function current()
+    protected function getLine()
     {
-        if (is_string($this->lineCurrent))
-        {
-            $this->lineCurrent = str_getcsv($this->lineCurrent, $this->delimiter, $this->enclosure, $this->escape);
-        }
+        $line = parent::getLine();
+        $line = str_getcsv($line, $this->delimiter, $this->enclosure, $this->escape);
         
-        return $this->lineCurrent;
+        return $line;
     }
 }
