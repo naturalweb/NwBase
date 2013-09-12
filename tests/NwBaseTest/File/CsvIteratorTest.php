@@ -9,20 +9,35 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     protected $totLine = 4;
     
-    public function setUp()
+    protected function makeFile($isHeader = false)
     {
+        $this->dropFile();
+        
         $content = '';
+        if ($isHeader) {
+            $content = 'num_line;"name_field"';
+        }
+        
         for($x=0;$x<$this->totLine;$x++) {
             $content .= '"Line ' . $x . '";"Campo '.$x.'"' . PHP_EOL;
         }
-    
+        
         $this->filename = tempnam('', '');
         file_put_contents($this->filename, trim($content));
+        
+        return $this->filename;
+    }
+    
+    protected function dropFile()
+    {
+        if($this->filename && file_exists($this->filename)) {
+            unlink($this->filename);
+        }
     }
     
     public function tearDown()
     {
-        unlink($this->filename);
+        $this->dropFile();
     }
     
     protected function assertPreConditions()
@@ -35,6 +50,8 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     public function testConstrunctAndIntances()
     {
+        $this->makeFile();
+        
         $delimiter = "|";
         $enclosure = '"';
         $escape = '\\';
@@ -49,6 +66,8 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     public function testMethodCurrentCsv()
     {
+        $this->makeFile();
+        
         $iterator = new CsvIterator($this->filename);
         $this->assertAttributeSame(";", 'delimiter', $iterator);
         $this->assertAttributeSame(null, 'enclosure', $iterator);
