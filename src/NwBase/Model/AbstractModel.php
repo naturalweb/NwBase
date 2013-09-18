@@ -661,6 +661,8 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     public function update(InterfaceEntity $entity)
     {
         try {
+            $entity->preUpdate($this);
+            
             $values = $entity->getArrayCopy();
             $where = $this->_whereFromPrimaryKeys($values);
             if (!count($where) || array_search(null, $where)!==false) {
@@ -688,8 +690,6 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             $return = null;
             
             if (count($values)) {
-
-                $entity->preUpdate($this);
                 
                 $return = $this->getTableGateway()->update($values, $where);
                 
