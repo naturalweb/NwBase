@@ -15,7 +15,7 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
         
         $content = '';
         if ($isHeader) {
-            $content = 'num_line;"name_field"';
+            $content = 'num_line;"name_field"' . PHP_EOL;
         }
         
         for($x=0;$x<$this->totLine;$x++) {
@@ -52,29 +52,31 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->makeFile();
         
+        $isHeader = 1;
         $delimiter = "|";
         $enclosure = '"';
         $escape = '\\';
         
-        $iterator = new CsvIterator($this->filename, $delimiter, $enclosure, $escape);
+        $iterator = new CsvIterator($this->filename, $isHeader, $delimiter, $enclosure, $escape);
         
         $this->assertInstanceOf('NwBase\File\FileIterator', $iterator);
+        $this->assertAttributeSame(true, 'isHeader', $iterator);
         $this->assertAttributeSame($delimiter, 'delimiter', $iterator);
         $this->assertAttributeSame($enclosure, 'enclosure', $iterator);
         $this->assertAttributeSame($escape, 'escape', $iterator);
     }
     
-    public function testMethodCurrentCsv()
+    public function testMethodGetLineCsv()
     {
         $this->makeFile();
         
         $iterator = new CsvIterator($this->filename);
+        $this->assertAttributeSame(false, 'isHeader', $iterator);
         $this->assertAttributeSame(";", 'delimiter', $iterator);
         $this->assertAttributeSame(null, 'enclosure', $iterator);
         $this->assertAttributeSame(null, 'escape', $iterator);
         
-        foreach ($iterator as $x => $line)
-        {
+        foreach ($iterator as $x => $line) {
             $expected = array(
                 'Line '.$x,
                 'Campo '.$x,
@@ -82,5 +84,17 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
             
             $this->assertEquals($expected, $line);
         }
+    }
+    
+    public function testMethodGetHeadersAndRewind()
+    {
+        $this->makeFile(true);
+        
+        $iterator = new CsvIterator($this->filename, true);
+        $this->assertAttributeSame(true, 'isHeader', $iterator);
+        
+        $expected = array("num_line", "name_field");
+        $this->assertAttributeSame(true, 'isHeader', $iterator);
+        $this->assertSame($expected, $iterator->getHeaders());
     }
 }

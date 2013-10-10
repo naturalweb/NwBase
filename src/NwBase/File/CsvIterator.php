@@ -16,6 +16,16 @@ namespace NwBase\File;
  */
 class CsvIterator extends FileIterator
 {
+    /**
+     * @var bool
+     */
+    protected $isHeader;
+    
+    /**
+     * @var array
+     */
+    protected $headers;
+    
     /** 
      * @var string
      */
@@ -38,10 +48,11 @@ class CsvIterator extends FileIterator
      * 
      * @throws \RuntimeException
      */
-    public function __construct($fileName, $delimiter = null, $enclosure = null, $escape = null)
+    public function __construct($fileName, $isHeader = null, $delimiter = null, $enclosure = null, $escape = null)
     {
         parent::__construct($fileName);
         
+        $this->isHeader = (boolean) $isHeader;
         $this->delimiter = (string) !is_null($delimiter) ? $delimiter : self::DELIMITER_DEFAULT;
         $this->enclosure = is_string($enclosure) ? $enclosure : null;
         $this->escape    = is_string($escape) ? $escape : null;
@@ -54,9 +65,51 @@ class CsvIterator extends FileIterator
      */
     protected function getLine()
     {
-        $line = parent::getLine();
-        $line = str_getcsv($line, $this->delimiter, $this->enclosure, $this->escape);
+        $line = str_getcsv(parent::getLine(), $this->delimiter, $this->enclosure, $this->escape);
         
         return $line;
+    }
+    
+    /**
+     * Retorna o headers
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        if ($this->headers === null) {
+            if (!$this->isHeader) {
+                return $this->headers = array();
+            }
+            
+            $tell = ftell($this->fileHandle);
+            fseek($this->fileHandle, 0);
+            
+            $headers = $this->getLine();
+            
+            fseek($this->fileHandle, $tell);
+            unset($tell);
+            
+            $this->headers = $headers;
+        }
+        
+        return $this->headers;
+    }
+    
+    /**
+     * Chama o getHeaders e inicia da segunda linha
+     * 
+     * @see \NwBase\File\FileIterator::rewind()
+     */
+    public function rewind()
+    {
+        if ( $this->isHeader ) {
+            $this->getHeaders();
+            fseek($this->fileHandle, 1);
+            $this->lineCurrent = $this->getLine();
+            $this->key = 0;
+        } else {
+            parent::rewind();
+        }
     }
 }
