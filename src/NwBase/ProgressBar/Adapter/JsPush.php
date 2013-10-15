@@ -96,4 +96,14 @@ class JsPush extends ZendJsPush
         
         $this->finish();
     }
+    
+    /**
+     * Método sobrescrito para só imprimir se não for ambiente de teste
+     */
+    protected function _outputData($data)
+    {
+        if (APPLICATION_ENV != 'testing') {
+            parent::_outputData($data);
+        }
+    }
 }
