@@ -16,6 +16,11 @@ namespace NwBase\File;
  */
 class FileIterator implements \Iterator, \Countable
 {
+    /**
+     * @var string
+     */
+    protected $fileName;
+    
     /** 
      * @var resource
      */
@@ -45,6 +50,8 @@ class FileIterator implements \Iterator, \Countable
      */
     public function __construct($fileName)
     {
+        $this->fileName = (string) $fileName;
+        
         if (!$this->fileHandle = fopen($fileName, 'r')) {
             throw new \RuntimeException('Couldn\'t open file "' . $fileName . '"');
         }

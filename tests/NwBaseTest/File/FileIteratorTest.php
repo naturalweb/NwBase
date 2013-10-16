@@ -42,6 +42,7 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(null, 'key', $iterator);
         $this->assertAttributeEquals(null, 'lineCurrent', $iterator);
         $this->assertAttributeEquals(null, 'count', $iterator);
+        $this->assertAttributeEquals($this->filename, "fileName", $iterator);
     }
     
     public function testCountable()
