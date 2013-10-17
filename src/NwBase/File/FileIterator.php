@@ -147,7 +147,7 @@ class FileIterator implements \Iterator, \Countable
         
         $line = fgets($this->fileHandle);
         
-        if (mb_detect_encoding($line, $encoding, true) == $encoding) {
+        if (mb_detect_encoding($line, $encoding, true) != $encoding) {
             $line = utf8_encode($line);
         }
         
