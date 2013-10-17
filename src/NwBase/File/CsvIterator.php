@@ -66,6 +66,7 @@ class CsvIterator extends FileIterator
     protected function getLine()
     {
         $line = str_getcsv(parent::getLine(), $this->delimiter, $this->enclosure, $this->escape);
+        $line = array_map("trim", $line);
         
         return $line;
     }

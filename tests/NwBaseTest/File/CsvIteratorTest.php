@@ -9,7 +9,7 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     protected $totLine = 4;
     
-    protected function makeFile($isHeader = false)
+    protected function makeFile($isHeader = false, $hasWhiteSpace = false)
     {
         $this->dropFile();
         
@@ -18,8 +18,10 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
             $content = 'num_line;"name_field"' . PHP_EOL;
         }
         
+        $whiteSpace = $hasWhiteSpace === true ? "  ": "";
+        
         for($x=0;$x<$this->totLine;$x++) {
-            $content .= '"Line ' . $x . '";"Campo '.$x.'"' . PHP_EOL;
+            $content .= '"Line '.$x.$whiteSpace.'";"Campo '.$x.$whiteSpace.'"' . PHP_EOL;
         }
         
         $this->filename = tempnam('', '');
@@ -68,7 +70,7 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     public function testMethodGetLineCsv()
     {
-        $this->makeFile();
+        $this->makeFile(false, true);
         
         $iterator = new CsvIterator($this->filename);
         $this->assertAttributeSame(false, 'isHeader', $iterator);
