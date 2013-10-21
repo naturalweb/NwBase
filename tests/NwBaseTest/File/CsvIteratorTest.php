@@ -70,7 +70,7 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     public function testCountWithoutHeader()
     {
-        $this->makeFile();
+        $this->makeFile(false);
         $iterator = new CsvIterator($this->filename, false);
     
         $this->assertEquals($this->totLine, $iterator->count());
@@ -79,11 +79,11 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
     
     public function testCountWithHeader()
     {
-        $this->makeFile();
+        $this->makeFile(true);
         $iterator = new CsvIterator($this->filename, true);
     
-        $this->assertEquals($this->totLine-1, $iterator->count());
-        $this->assertAttributeEquals($this->totLine-1, 'count', $iterator);
+        $this->assertEquals($this->totLine, $iterator->count());
+        $this->assertAttributeEquals($this->totLine, 'count', $iterator);
     }
     
     public function testMethodGetLineCsv()
