@@ -68,6 +68,24 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeSame($escape, 'escape', $iterator);
     }
     
+    public function testCountWithoutHeader()
+    {
+        $this->makeFile();
+        $iterator = new CsvIterator($this->filename, false);
+    
+        $this->assertEquals($this->totLine, $iterator->count());
+        $this->assertAttributeEquals($this->totLine, 'count', $iterator);
+    }
+    
+    public function testCountWithHeader()
+    {
+        $this->makeFile();
+        $iterator = new CsvIterator($this->filename, true);
+    
+        $this->assertEquals($this->totLine-1, $iterator->count());
+        $this->assertAttributeEquals($this->totLine-1, 'count', $iterator);
+    }
+    
     public function testMethodGetLineCsv()
     {
         $this->makeFile(false, true);

@@ -59,6 +59,24 @@ class CsvIterator extends FileIterator
     }
     
     /**
+     * Conta as linhas pulando o cabeçalho, se existir
+     * 
+     * @return integer
+     */
+    public function count()
+    {
+        if (is_null($this->count)) {
+            $this->count = parent::count();
+            
+            if ($this->isHeader) {
+                $this->count -= 1;
+            }
+        }
+        
+        return $this->count;
+    }
+    
+    /**
      * Retorna a linha atual parseando csv, retornando o array
      * 
      * @return array
