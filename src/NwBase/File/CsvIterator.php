@@ -106,9 +106,9 @@ class CsvIterator extends FileIterator
     {
         if ( $this->isHeader ) {
             $this->getHeaders();
-            fseek($this->fileHandle, 1);
+            fgets($this->fileHandle);
             $this->lineCurrent = $this->getLine();
-            $this->key = 0;
+            $this->key = 1;
         } else {
             parent::rewind();
         }

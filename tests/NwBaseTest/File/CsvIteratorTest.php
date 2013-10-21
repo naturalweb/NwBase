@@ -99,4 +99,18 @@ class CsvIteratorTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeSame(true, 'isHeader', $iterator);
         $this->assertSame($expected, $iterator->getHeaders());
     }
+    
+    public function testRewindSkippingHeader()
+    {
+        $this->makeFile(true);
+        
+        $iterator = new CsvIterator($this->filename, true);
+        
+        $iterator->rewind();
+        $actual = $iterator->current();
+        
+        $expected = array("Line 0", "Campo 0");
+        
+        $this->assertEquals($expected, $actual);
+    }
 }
