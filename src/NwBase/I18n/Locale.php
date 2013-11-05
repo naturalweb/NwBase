@@ -27,16 +27,16 @@ class Locale extends \Locale
             'AP' => 'Amapá',
             'AM' => 'Amazonas',
             'BA' => 'Bahia',
-            'CE' => 'Ceara',
+            'CE' => 'Ceará',
             'DF' => 'Distrito Federal',
             'ES' => 'Espírito Santo',
-            'GO' => 'Goias',
+            'GO' => 'Goiás',
             'MA' => 'Maranhão',
             'MT' => 'Mato Grosso',
             'MS' => 'Mato Grosso do Sul',
             'MG' => 'Minas Gerais',
             'PA' => 'Pará',
-            'PB' => 'Paraiba',
+            'PB' => 'Paraíba',
             'PR' => 'Paraná',
             'PE' => 'Pernambuco',
             'PI' => 'Piauí',
@@ -81,14 +81,9 @@ class Locale extends \Locale
      */
     public static function siglasUF($locale = null)
     {
-        $list = self::nomesUF($locale);
-        array_walk(
-            $list,
-            function(&$item, $key){
-                $item = $key;
-            }
-        );
-        
+        $nomes = self::nomesUF($locale);
+        $siglas = array_keys($nomes);
+        $list = array_combine($siglas, $siglas);
         return $list;
     }
 }
