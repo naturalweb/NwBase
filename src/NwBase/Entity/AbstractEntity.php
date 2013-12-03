@@ -437,4 +437,37 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     public function postDelete(InterfaceModel $model)
     {
     }
+    
+    /**
+     * Executado quando insert dá erro
+     * 
+     * @param InterfaceModel $model Model Database
+     * 
+     * @return void
+     */
+    public function errorInsert(InterfaceModel $model)
+    {
+    }
+
+    /**
+     * Executado quando update dá erro
+     * 
+     * @param InterfaceModel $model Model Database
+     * 
+     * @return void
+     */
+    public function errorUpdate(InterfaceModel $model)
+    {
+    }
+    
+    /**
+     * Executado quando delete dá erro
+     * 
+     * @param InterfaceModel $model Model Database
+     * 
+     * @return void
+     */
+    public function errorDelete(InterfaceModel $model)
+    {
+    }
 }

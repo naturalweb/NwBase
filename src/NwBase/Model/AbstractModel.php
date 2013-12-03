@@ -645,6 +645,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             return $return;
 
         } catch (\Exception $e) {
+            $entity->errorInsert($this);
             throw $e;
         }
     }
@@ -703,6 +704,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             return $return;
             
         } catch (\Exception $e) {
+            $entity->errorUpdate($this);
             throw $e;
         }
     }
@@ -745,6 +747,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             return $return;
 
         } catch (\Exception $e) {
+            $entity->errorDelete($this);
             throw $e;
         }
     }
