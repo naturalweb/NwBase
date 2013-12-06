@@ -797,4 +797,21 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     {
         return $this->getAdapter()->getDriver()->getConnection()->rollback();
     }
+    
+    /**
+     * Retorna id do último registro inserido
+     *
+     * @return integer
+     */
+    public function getLastInsertId()
+    {
+        $driver = $this->getAdapter()->getDriver();
+    
+        if ($driver->getDatabasePlatformName() == "Postgresql") {
+            // getLastGeneratedValue para bd Postgre requer que seja especificado a sequência
+            return $driver->getConnection()->getLastGeneratedValue($this->sequenceName);
+        }
+    
+        return $this->getLastInsertValue();
+    }
 }

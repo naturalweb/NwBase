@@ -702,4 +702,15 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $model = new FooBarModel($mockAdapter);
         $model->rollback();
     }
+    
+    public function testGetLastInsertId()
+    {
+        $myEntity = new FooBarEntity();
+        $myEntity->setBar('mais um valor');
+        
+        $this->model->insert($myEntity);
+        $id = $this->model->getLastInsertId();
+        
+        $this->assertEquals(5, $id);
+    }
 }
