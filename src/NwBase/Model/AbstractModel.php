@@ -620,7 +620,12 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             
             $entity->preInsert($this);
             
-            $columns = array_flip($this->getColumnsNames());
+            // Remove colunas primárias
+            $columnsPrimary = $this->getColumnPrimary();
+            $columnsNames   = $this->getColumnsNames();
+            $columnsNames   = array_diff($columnsNames, $columnsPrimary);
+            
+            $columns = array_flip($columnsNames);
             
             $values = $entity->getArrayCopy();
             $values = array_intersect_key($values, $columns);
