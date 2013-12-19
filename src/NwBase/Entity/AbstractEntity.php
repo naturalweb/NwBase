@@ -100,9 +100,15 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function hasModified($property)
     {
-        if (!$this->_stored || ($this->_stored && array_key_exists($property, $this->_defaultValues) && $this->_defaultValues[$property] == $this->$property)) {
+        if (!$this->_stored || !property_exists($this, $property)) {
             return false;
         }
+
+        if (array_key_exists($property, $this->_defaultValues) &&
+            $this->_defaultValues[$property] == $this->$property) {
+            return false;
+        }
+
         return true;
     }
     
