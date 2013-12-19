@@ -80,11 +80,34 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     /**
      * Retorna o array  com as propriedade modificadas
      *
+     * @param string $property Propriedade
+     *
+     * @return array
+     */
+    public function setModified($property)
+    {
+        // Verifica se o valor informado para setar é diferente do atual
+        // para relamente fazer a modificação
+        if ($this->_stored) { 
+            if (!isset($this->_defaultValues[$property]) || $this->_defaultValues[$property] != $this->$property) {
+                $this->_modified[$property] = $property;
+                
+            } elseif (isset($this->_modified[$property])) {
+                unset($this->_modified[$property]);
+            }
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Retorna o array  com as propriedade modificadas
+     *
      * @return array
      */
     public function getModified()
     {
-        return $this->_modified;
+        return array_keys($this->_modified);
     }
     
     /**
@@ -226,16 +249,7 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         
         $this->$property = $value;
         
-        // Verifica se o valor informado para setar é diferente do atual
-        // para relamente fazer a modificação
-        if ($this->_stored) { 
-            if (!isset($this->_defaultValues[$property]) || $this->_defaultValues[$property] != $this->$property) {
-                $this->_modified[$property] = $value;
-                
-            } elseif (isset($this->_modified[$property])) {
-                unset($this->_modified[$property]);
-            }
-        }
+        $this->setModified($property);
         
         return $this;
     }

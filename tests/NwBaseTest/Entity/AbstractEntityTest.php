@@ -295,18 +295,16 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     public function testStoredCleanAndModified()
     {
         $entity = new FooBarEntity(array('foo' => 2, 'bar' => 'BAZ'), true);
-        
         $expected = array(
-            'bar' => 'baz',
+            'bar',
         );
         
         $entity->setProperty('foo', '2');
         $this->assertFalse($entity->hasModified('foo'), "Deveria não modificar a propriedade");
         
-        $entity->setProperty('bar', $expected['bar']);
+        $entity->setProperty('bar', "foobar");
         $this->assertTrue($entity->hasModified('bar'));
         
-        $this->assertAttributeEquals($expected, '_modified', $entity);
         $this->assertEquals($expected, $entity->getModified());
         
         $entity->clearModified();
@@ -322,5 +320,13 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         $entity->setProperty('bar', "BAZ");
         
         $this->assertFalse($entity->hasModified('bar'));
+    }
+
+    public function testMethodSetModified()
+    {
+        $entity = new FooBarEntity(array('bar' => 'ORIGINAL'), true);
+        
+        $entity->setBar('alterar');
+        $this->assertTrue($entity->hasModified('bar'));
     }
 }
