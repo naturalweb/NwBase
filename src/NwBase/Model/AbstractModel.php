@@ -684,7 +684,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
                 $columnPrimary = $this->getColumnPrimary();
                 $modified = $entity->getModified();
                 
-                if (count(array_intersect_key(array_flip($modified), array_flip($columnPrimary)))) {
+                if (count(array_intersect($modified, $columnPrimary))) {
                     $message = sprintf('Os campos "%s" não podem ser alterados por serem chave(s) primaria(s)', implode(', ', $columnPrimary));
                     throw new \Exception($message);
                 }
@@ -736,7 +736,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             $columnPrimary = $this->getColumnPrimary();
             $modified = $entity->getModified();
             
-            if (count(array_intersect_key(array_flip($modified), array_flip($columnPrimary)))) {
+            if (count(array_intersect($modified, $columnPrimary))) {
                 $message = sprintf('Os campos "%s" não podem ser alterados por serem chave(s) primaria(s)', implode(', ', $columnPrimary));
                 throw new \Exception($message);
             }

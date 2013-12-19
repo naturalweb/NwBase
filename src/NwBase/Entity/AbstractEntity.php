@@ -42,11 +42,6 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     protected $_defaultValues = array();
     
     /**
-     * @var array
-     */
-    protected $_modified = array();
-    
-    /**
      * @var HydratorInterface
      */
     protected $_hydrator = null;
@@ -76,38 +71,24 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     {
         return (boolean) $this->_stored;
     }
-    
-    /**
-     * Retorna o array  com as propriedade modificadas
-     *
-     * @param string $property Propriedade
-     *
-     * @return array
-     */
-    public function setModified($property)
-    {
-        // Verifica se o valor informado para setar é diferente do atual
-        // para relamente fazer a modificação
-        if ($this->_stored) { 
-            if (!isset($this->_defaultValues[$property]) || $this->_defaultValues[$property] != $this->$property) {
-                $this->_modified[$property] = $property;
-                
-            } elseif (isset($this->_modified[$property])) {
-                unset($this->_modified[$property]);
-            }
-        }
-        
-        return $this;
-    }
 
     /**
-     * Retorna o array  com as propriedade modificadas
+     * Retorna array com propriedade modificadas
      *
      * @return array
      */
     public function getModified()
     {
-        return array_keys($this->_modified);
+        $data = $this->toArray();
+        $modified = array();
+        
+        foreach ($data as $key => $value) {
+            if ($this->hasModified($key)) {
+                $modified[] = $key;
+            }
+        }
+        
+        return $modified;
     }
     
     /**
@@ -119,7 +100,10 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function hasModified($property)
     {
-        return array_key_exists($property, $this->_modified);
+        if (!$this->_stored || ($this->_stored && array_key_exists($property, $this->_defaultValues) && $this->_defaultValues[$property] == $this->$property)) {
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -129,7 +113,6 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function clearModified()
     {
-        $this->_modified = array();
         $this->_storedClean  = false;
         $this->_defaultValues = $this->getArrayCopy();
     }
@@ -248,8 +231,6 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
         $value = $value!=='' && $value!==0 ? $value : null;
         
         $this->$property = $value;
-        
-        $this->setModified($property);
         
         return $this;
     }
