@@ -60,7 +60,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testConstrutorPaginatorAdapterDbTable()
     {
         $actualAdapter = new ModelAdapter($this->model);
-        $this->assertInstanceOf('NwBase\Paginator\Adapter\DbTableGateway', $actualAdapter);
+        $this->assertInstanceOf('Zend\Paginator\Adapter\DbSelect', $actualAdapter);
         
         $this->assertEquals(4, $actualAdapter->count(), "Contagem de registro errada");
         
