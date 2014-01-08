@@ -467,6 +467,26 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $rowsAfetados = $this->model->update($set, $spec);
     }
     
+    public function testUpdateAnWithValues()
+    {
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array(), array(), '', false);
+        
+        $set = array('bar' => 'trocar o valor');
+        $where = array('foo' => 2);
+        $mockTableGateway->expects($this->once())
+                         ->method('update')
+                         ->with($set, $where)
+                         ->will($this->returnValue(1));
+        
+        $mockTableGateway->expects($this->once())
+                         ->method('getTable')
+                         ->will($this->returnValue(new TableIdentifier($this->tableNameTest)));
+        
+        $this->model->setTableGateway($mockTableGateway);
+        
+        $this->assertEquals(1, $this->model->updateWith($set, $where));
+    }
+
     /**
      * @expectedException \BadMethodCallException
      * @expectedExceptionMessage Metodo "buscaPorUsuario" inválido

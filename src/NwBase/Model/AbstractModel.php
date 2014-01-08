@@ -715,6 +715,20 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
     }
     
     /**
+     * Edita o registros baseado no where
+     * 
+     * @param array $set   Dados
+     * @param array $where Where
+     * 
+     * @throws \Exception
+     * @return int
+     */
+    public function updateWith(array $set, array $where = array())
+    {
+        return $this->getTableGateway()->update($set, $where);
+    }
+
+    /**
      * Excluir o registro da entity e o objeto
      * 
      * @param InterfaceEntity $entity Object do registro
