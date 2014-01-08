@@ -7,7 +7,7 @@
  */
 namespace NwBase\Paginator\Adapter;
 
-use NwBase\Paginator\Adapter\DbTableGateway;
+use Zend\Paginator\Adapter\DbSelect;
 use NwBase\Model\InterfaceModel;
 
 /**
@@ -18,7 +18,7 @@ use NwBase\Model\InterfaceModel;
  * @subpackage Adapter
  * @author     Renato Moura <renato@naturalweb.com.br>
  */
-class DbModel extends DbTableGateway
+class DbModel extends DbSelect
 {
     /**
      * Construtor
@@ -27,8 +27,12 @@ class DbModel extends DbTableGateway
      */
     public function __construct(InterfaceModel $model, $where = null, $order = null)
     {
-        $tableGateway = $model->getTableGateway();
+        $select = $model->getSelect($where, $order);
         
-        parent::__construct($tableGateway, $where, $order);
+        $tableGateway       = $model->getTableGateway();
+        $dbAdapter          = $tableGateway->getAdapter();
+        $resultSetPrototype = $tableGateway->getResultSetPrototype();
+        
+        parent::__construct($select, $dbAdapter, $resultSetPrototype);
     }
 }
