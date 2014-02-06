@@ -16,7 +16,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Cache\Storage\StorageInterface as CacheStorageInterface;
 use NwBase\Entity\InterfaceEntity;
 use NwBase\Model\InterfaceModel;
@@ -32,7 +32,37 @@ use NwBase\Db\ResultSet\ResultSetPairs;
  */
 abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInterface
 {
-    use ServiceLocatorAwareTrait;
+    protected static $_instance;
+    protected static $_staticServiceLocator;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator = null;
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+        self::$_staticServiceLocator = $serviceLocator;
+
+        return $this;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
     
     /** 
      * @var string
@@ -827,5 +857,30 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         }
     
         return $this->getLastInsertValue();
+    }
+
+    /**
+     * Handle dynamic, static calls to the object.
+     *
+     * @param  string  $method
+     * @param  array   $args
+     * @return mixed
+     */
+    public static function __callStatic($method, $args)
+    {
+        if (preg_match('/^st[A-Z]/', $method)) {
+            $method = strtolower(substr($method, 2, 1)) . substr($method, 3);
+        }
+
+        if (self::$_instance) {
+            $instance = self::$_instance;
+        } else {
+            $instance = new static();
+            $instance->setServiceLocator(self::$_staticServiceLocator);
+
+            self::$_instance = $instance;
+        }
+
+        return call_user_func_array(array($instance, $method), $args);
     }
 }
