@@ -475,23 +475,11 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
     /**
      * Busca os campos adicionais conforme where
      * e concatena com o array de listHeader da entidade
-     * 
-     * @param string $columnKey | Chave do array
-     * @param string $columnValue | Valor do array
-     * @param array $where | Condições para a busca no fetchPairs
-     * @param string $order | Ordem de listagem no array
-     * @param array $listHeaders | Array com os campos pré definidos na entidade
-     * 
-     * @return string|multitype:
      */
-    public static function extraFields($columnKey, $columnValue, $where, $order = null, array $listHeaders)
+    public static function extraFields($tabela, array $listHeaders)
     {
-    	$extra_fields = \Admin\Model\ExtraFields::stFetchPairs($columnKey, $columnValue, $where, $order);
+    	$extra_fields = \Admin\Model\ExtraFields::stFetchPairs('nome','descricao',array('tabela'=>$tabela));
     	$extra_fields = $extra_fields->toArray();
-    	$extra_fields = array_map(function ($value){
-    		$value_replaced = str_replace('_', ' ', $value);
-    		return ucwords($value_replaced);
-    	}, $extra_fields);
     	return array_merge($listHeaders, $extra_fields);
     }    
 }
