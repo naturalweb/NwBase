@@ -13,8 +13,6 @@ use NwBase\Entity\ServiceLocatorAwareTrait;
 use NwBase\Model\InterfaceModel;
 use NwBase\DateTime\DateTime as NwDateTime;
 use NwBase\Entity\Hydrator\HydratorEntity;
-use Admin\Model\Extrafields;
-use Admin\Entity\ExtraField as ExtraFieldEntity;
 
 /**
  * Classe abstrata para criação de entity
@@ -472,19 +470,5 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
      */
     public function errorDelete(InterfaceModel $model)
     {
-    }
-    
-    /**
-     * Busca os campos adicionais conforme where
-     * e concatena com o array de listHeader da entidade
-     */
-    public static function extraFields($tabela, array $listHeaders)
-    {
-    	$extra_fields = Extrafields::stFetchPairs('nome','descricao',array('tabela'=>$tabela));
-    	$new_extra_fields = array();
-    	foreach ($extra_fields as $chave => $field):
-    		$new_extra_fields[ExtraFieldEntity::FIELD_PREFIX.$chave] = $field;
-    	endforeach;
-    	return array_merge($listHeaders, $new_extra_fields);
-    }     
+    }  
 }
