@@ -428,7 +428,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         } else {
             $select = new Select($this->getTableIdentifier());
             // Filtros
-            $select->where($where);
+            if ($where != null) $select->where($where);
         }
 
         // ORDENACAO DO SELECT
