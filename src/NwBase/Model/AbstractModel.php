@@ -668,7 +668,7 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
             if ($return) {
                 
                 // Seta a Column Primary caso seja Auto Increment
-                $lastInsertId = $this->getLastInsertValue();
+                $lastInsertId = $this->getLastInsertId();
                 $columnPrimary = $this->getColumnPrimary();
                 if ($lastInsertId) {
                     $entity->setProperty($columnPrimary[0], $lastInsertId);
