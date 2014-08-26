@@ -328,32 +328,41 @@ abstract class AbstractEntity implements InterfaceEntity, ServiceLocatorAwareInt
             return null;
         }
         
-        switch ($format) {
-            case NwDateTime::DATETIME:
-                $nameObj = "NwBase\\DateTime\\DateTime";
-                break;
-            case NwDateTime::DATE:
-                $nameObj = "NwBase\\DateTime\\Date";
-                break;
-            case NwDateTime::TIME:
-                $nameObj = "NwBase\\DateTime\\Time";
-                break;
-            default:
-                return null;
-        }
-        
-        if ($value instanceof NwDateTime) {
-            $datetime = $value;
-        
-        } elseif ($value instanceof \DateTime) {
-            $datetime = new $nameObj();
-            $datetime->setTimestamp($value->getTimestamp());
-        } else {
-            try {
-                $datetime = new $nameObj($value);
-            } catch (\Exception $e) {
-                $datetime = null;
+        try {
+            switch ($format) {
+            	case NwDateTime::DATETIME:
+            	    $nameObj = "NwBase\\DateTime\\DateTime";
+            	    break;
+            	case NwDateTime::DATE:
+            	    $nameObj = "NwBase\\DateTime\\Date";
+            	    break;
+            	case NwDateTime::TIME:
+            	    $nameObj = "NwBase\\DateTime\\Time";
+            	    break;
+            	case NwDateTime::BR_DATETIME:
+            	    $datetime = NwDateTime::createFromFormat(NwDateTime::BR_DATETIME, $value); 
+            	    break;
+            	case NwDateTime::BR_DATE:
+            	    $datetime = NwDateTime::createFromFormat(NwDateTime::BR_DATE, $value);
+            	    break;
+            	default:
+            	    return null;
             }
+            
+            if ($value instanceof NwDateTime) {
+                $datetime = $value;
+            
+            } elseif ($value instanceof \DateTime) {
+                $datetime = new $nameObj();
+                $datetime->setTimestamp($value->getTimestamp());
+                
+            } else if (!isset($datetime)) {
+                // se ainda não setou datetime
+                $datetime = new $nameObj($value);   
+            }
+        
+        } catch (\Exception $e) {
+            $datetime = null;
         }
         
         return $datetime;
