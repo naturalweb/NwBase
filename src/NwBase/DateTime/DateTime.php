@@ -19,6 +19,8 @@ class DateTime extends \DateTime
     const DATETIME = 'Y-m-d H:i:s';
     const DATE = 'Y-m-d';
     const TIME = 'H:i:s';
+    const BR_DATETIME = 'd/m/Y H:i:s';
+    const BR_DATE     = 'd/m/Y';
 
     /**
      * String de saida no formato de time
