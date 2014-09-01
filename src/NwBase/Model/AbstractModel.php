@@ -11,6 +11,8 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Metadata;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\TableIdentifier;
@@ -112,6 +114,11 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
      * @var CacheStorageInterface
      */
     protected static $_defaultCache = null;
+    
+    /**
+     * @var \Zend\Db\Sql\Sql
+     */
+    protected $_sql = null;
     
     /**
      * Retorna o prototype da Entity
@@ -882,5 +889,18 @@ abstract class AbstractModel implements InterfaceModel, ServiceLocatorAwareInter
         }
 
         return call_user_func_array(array($instance, $method), $args);
+    }
+    
+    public function getSql()
+    {
+        if (!$this->_sql) $this->_sql = new Sql($this->getAdapter());
+        return $this->_sql;
+    }
+    
+    public function prepareAndExecuteStatement(SqlInterface $objSql)
+    {
+        $statement = $this->getSql()->prepareStatementForSqlObject($objSql);
+        $statement->prepare();
+        return $statement->execute();
     }
 }
