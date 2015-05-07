@@ -17,3 +17,7 @@ composer.phar
 
 Thumbs.db
 _notes/
+
+# arquivos de projeto do sublime
+*.sublime-project
+*.sublime-workspace
