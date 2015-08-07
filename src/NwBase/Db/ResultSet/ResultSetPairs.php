@@ -23,7 +23,7 @@ class ResultSetPairs extends AbstractResultSet
     protected $_valuesDefault = array();
     protected $_columnKey     = null;
     protected $_columnValue   = null;
-    
+
     /**
      * Constructor
      *
@@ -36,12 +36,12 @@ class ResultSetPairs extends AbstractResultSet
         $this->setComlumnValue($columnValue);
         $this->setValuesDefault($valuesDefault);
     }
-    
+
     /**
      * Set Name Column Key
-     * 
+     *
      * @param string $columnKey Name Column
-     * 
+     *
      * @return this
      */
     public function setComlumnKey($columnKey)
@@ -49,12 +49,12 @@ class ResultSetPairs extends AbstractResultSet
         $this->_columnKey = $columnKey;
         return $this;
     }
-    
+
     /**
      * Set Name Column Value
      *
      * @param string $columnValue Name Column
-     * 
+     *
      * @return this
      */
     public function setComlumnValue($columnValue)
@@ -62,12 +62,12 @@ class ResultSetPairs extends AbstractResultSet
         $this->_columnValue = $columnValue;
         return $this;
     }
-    
+
     /**
      * Set values Default
      *
      * @param string $valuesDefault Values
-     * 
+     *
      * @return this
      */
     public function setValuesDefault($valuesDefault)
@@ -75,7 +75,7 @@ class ResultSetPairs extends AbstractResultSet
         $this->_valuesDefault = $valuesDefault;
         return $this;
     }
-    
+
     /**
      * Iterator: retrieve current key
      *
@@ -84,28 +84,28 @@ class ResultSetPairs extends AbstractResultSet
     public function key()
     {
         $data = parent::current();
-        if (!isset($data[$this->_columnKey])) {
+        if (!array_key_exists($this->_columnKey, $data)) {
             throw new InvalidArgumentException("Coluna Key invalida, para montagem do pair");
         }
-        
+
         return $data[$this->_columnKey];
     }
-    
+
     /**
      * Retornar o valor
-     * 
+     *
      * @return mixed
      */
     public function current()
     {
         $data = parent::current();
-        if (!isset($data[$this->_columnValue])) {
+        if (!array_key_exists($this->_columnValue, $data)) {
             throw new InvalidArgumentException("Coluna Value invalida, para montagem do pair");
         }
-        
+
         return $data[$this->_columnValue];
     }
-    
+
     /**
      * Cast result set to array of arrays
      *
