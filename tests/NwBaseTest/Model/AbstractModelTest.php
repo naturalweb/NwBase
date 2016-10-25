@@ -30,13 +30,13 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $driver = "pdo_sqlite";
-        $charset  = 'utf8';
-        $dsn = sprintf("sqlite::memory:");
-        $db = array(
-                'driver'         => $driver,
-                'dsn'            => $dsn,
-                'charset'        => $charset,
+        $driver  = "pdo_sqlite";
+        $charset = 'utf8';
+        $dsn     = sprintf("sqlite::memory:");
+        $db      = array(
+            'driver'         => $driver,
+            'dsn'            => $dsn,
+            'charset'        => $charset,
         );
         $this->adapter = new Adapter($db);
 
@@ -340,6 +340,26 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testAbstractModelConstructedSetAdapter
+     * @expectedException \Exception
+     * @expectedExceptionMessage Os campos "foo" não podem ser alterados por serem chave(s) primaria(s)
+     */
+    public function testTryDeleteEntityWithModifiedPrimaryColumnsMustThrowException()
+    {
+        $qtdAllBefore = $this->model->fetchAll()->count();
+
+        $myEntity = new FooBarEntity(array('foo' => 1, 'bar' => 'valor 1'), true);
+        $myEntity->setFoo(2);
+        $rowsAfetados = $this->model->delete($myEntity);
+
+        $qtdAllAfter = $this->model->fetchAll()->count();
+
+        // Verifica que de fato nenhum registro foi excluído
+        $this->assertEquals($qtdAllBefore, $qtdAllAfter);
+        $this->assertNull($rowsAfetados);
+    }
+
+    /**
+     * @depends testAbstractModelConstructedSetAdapter
      */
     public function testCanInsertAnEntityEBuscaLastValue()
     {
@@ -486,22 +506,6 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $return);
     }
 
-    public function testServiceLocatorAwareInterface()
-    {
-        $services = new ServiceManager();
-        $services->setService('Zend\Db\Adapter\Adapter', $this->adapter);
-
-        $model = new FooBarModel();
-
-        $this->assertAttributeEmpty("serviceLocator", $model);
-
-        $model->setServiceLocator($services);
-
-        // Service
-        $this->assertEquals($services, $model->getServiceLocator());
-        $this->assertAttributeEquals($services, 'serviceLocator', $model);
-    }
-
     public function testSetTableGateway()
     {
         $model = new FooBarModel();
@@ -639,52 +643,7 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals($cache, '_metadataCache', $model);
     }
 
-    public function testBeginTransaction()
-    {
-        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
-        $mockConnection->expects($this->once())->method('beginTransaction');
-
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockDriver->expects($this->once())->method('getConnection')->will($this->returnValue($mockConnection));
-
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array($mockDriver));
-        $mockAdapter->expects($this->once())->method('getDriver')->will($this->returnValue($mockDriver));
-
-        $model = new FooBarModel($mockAdapter);
-        $model->beginTransaction();
-    }
-
-    public function testCommit()
-    {
-        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
-        $mockConnection->expects($this->once())->method('commit');
-
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockDriver->expects($this->once())->method('getConnection')->will($this->returnValue($mockConnection));
-
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array($mockDriver));
-        $mockAdapter->expects($this->once())->method('getDriver')->will($this->returnValue($mockDriver));
-
-        $model = new FooBarModel($mockAdapter);
-        $model->commit();
-    }
-
-    public function testRollback()
-    {
-        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
-        $mockConnection->expects($this->once())->method('rollback');
-
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockDriver->expects($this->once())->method('getConnection')->will($this->returnValue($mockConnection));
-
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array($mockDriver));
-        $mockAdapter->expects($this->once())->method('getDriver')->will($this->returnValue($mockDriver));
-
-        $model = new FooBarModel($mockAdapter);
-        $model->rollback();
-    }
-
-    public function testGetLastInsertId()
+    public function testGetLastInsertIdOtherPlatform()
     {
         $myEntity = new FooBarEntity();
         $myEntity->setBar('mais um valor');
@@ -693,5 +652,37 @@ class AbstractModelTest extends \PHPUnit_Framework_TestCase
         $id = $this->model->getLastInsertId();
 
         $this->assertEquals(5, $id);
+    }
+
+    public function testGetLastInsertIdPostgresqlPlatform()
+    {
+        $expectedId     = 5;
+        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\Pdo\Connection');
+        $mockConnection
+            ->expects($this->once())
+            ->method('getLastGeneratedValue')
+            ->will($this->returnValue($expectedId));
+
+        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver
+            ->expects($this->once())
+            ->method('getDatabasePlatformName')
+            ->will($this->returnValue('Postgresql'));
+
+        $mockDriver
+            ->expects($this->once())
+            ->method('getConnection')
+            ->will($this->returnValue($mockConnection));
+
+        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', array(), array(), '', false);
+        $mockAdapter
+            ->expects($this->once())
+            ->method('getDriver')
+            ->will($this->returnValue($mockDriver));
+
+        $model = new FooBarModel($mockAdapter);
+        $id    = $model->getLastInsertId();
+
+        $this->assertEquals($expectedId, $id);
     }
 }
