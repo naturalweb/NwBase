@@ -1,16 +1,16 @@
 {
-    "name": "naturalweb/base",
+    "name": "becinteligencia/base",
     "description": "Conjunto de classes variadas que são utilizadas em vários módulos, para applicações desenvolvidas em Zend Framework 2",
     "type": "library",
     "keywords": [
-        "zf2", "zend", "framework", "naturalweb"
+        "zf2", "zend", "framework", "becinteligencia"
     ],
     "license": "BSD-3-Clause",
-    "homepage": "https://github.com/naturalweb/NwBase",
+    "homepage": "https://github.com/edsonhoraciojuniorbec/NwBase",
     "authors": [
         {
-            "name": "Renato Moura",
-            "email": "renato@naturalweb.com.br"
+            "name": "Edson Horácio Junior",
+            "email": "edson.junior@becinteligencia.com.br"
         }
     ],
     "require": {
