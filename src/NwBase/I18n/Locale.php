@@ -50,8 +50,42 @@ class Locale extends \Locale
             'SE' => 'Sergipe',
             'TO' => 'Tocantins',
         ),
+        'MX' => array(
+            'AG' => 'Aguascalientes',
+            'BC' => 'Baja California',
+            'BS' => 'Baja California Sur',
+            'CM' => 'Campeche',
+            'CS' => 'Chiapas',
+            'CH' => 'Chihuahua',
+            'CO' => 'Coahuila',
+            'CL' => 'Colima',
+            'CX' => 'Ciudad de México',
+            'DG' => 'Durango',
+            'GT' => 'Guanajuato',
+            'GR' => 'Guerrero',
+            'HG' => 'Hidalgo',
+            'JC' => 'Jalisco',
+            'ME' => 'Estado de México',
+            'MN' => 'Michoacán',
+            'MS' => 'Morelos',
+            'NT' => 'Nayarit',
+            'NL' => 'Nuevo León',
+            'OC' => 'Oaxaca',
+            'PL' => 'Puebla',
+            'QO' => 'Querétaro',
+            'QR' => 'Quintana Roo',
+            'SP' => 'San Luis Potosí',
+            'SL' => 'Sinaloa',
+            'SR' => 'Sonora',
+            'TC' => 'Tabasco',
+            'TS' => 'Tamaulipas',
+            'TL' => 'Tlaxcala',
+            'VZ' => 'Veracruz',
+            'YN' => 'Yucatán',
+            'ZS' => 'Zacatecas',
+        ),
     );
-    
+
     /**
      * Retorna a lista de UF (Estados) do pais,
      * com a sigla de chave e nome de valor
@@ -64,15 +98,15 @@ class Locale extends \Locale
         if (!$locale) {
             $locale = self::getDefault();
         }
-        
+
         $region = self::getRegion($locale);
         if (isset(self::$_listUF[$region])) {
             $list = self::$_listUF[$region];
         }
-        
+
         return $list;
     }
-    
+
     /**
      * Retorna a lista de UF (Estados) do pais,
      * com a sigla de chave e valor
