@@ -50,6 +50,9 @@ class FileIterator implements \Iterator, \Countable
      */
     public function __construct($fileName)
     {
+        // Detecta caracter de final de linha
+        ini_set('auto_detect_line_endings', true);
+
         $this->fileName = (string) $fileName;
 
         if (!$this->fileHandle = fopen($fileName, 'r')) {
