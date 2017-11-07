@@ -99,6 +99,8 @@ class Locale extends \Locale
             $locale = self::getDefault();
         }
 
+        self::overwriteLocale($locale);
+
         $region = self::getRegion($locale);
         if (isset(self::$_listUF[$region])) {
             $list = self::$_listUF[$region];
@@ -115,9 +117,25 @@ class Locale extends \Locale
      */
     public static function siglasUF($locale = null)
     {
+        self::overwriteLocale($locale);
         $nomes = self::nomesUF($locale);
         $siglas = array_keys($nomes);
-        $list = array_combine($siglas, $siglas);
+        $list = array_combine($siglas, $nomes);
         return $list;
+    }
+
+    /**
+     * Sobrescreve $locale se for PMR SPOTMX
+     *
+     * @param  string $locale
+     *
+     * @return string
+     */
+    private static function overwriteLocale(&$locale)
+    {
+        // Altera locale para exibir UFs do México em spotmx
+        if (defined('CLIENT_NAME') && CLIENT_NAME == 'spotmx') {
+            $locale = 'es_mx';
+        }
     }
 }
