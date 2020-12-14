@@ -84,6 +84,60 @@ class Locale extends \Locale
             'YN' => 'Yucatán',
             'ZS' => 'Zacatecas',
         ),
+        'ES' => array (
+            'A'  =>  'Alicante',
+            'AB' =>  'Albacete',
+            'AL' =>  'Almería',
+            'AV' => 'Ávila',
+            'B'  => 'Barcelona',
+            'BA' =>  'Badajoz',
+            'BI' =>  'Bilbao',
+            'BU' =>  'Burgos',
+            'C'  =>  'Coruña',
+            'CA' =>  'Cádiz',
+            'CC' =>  'Cáceres',
+            'CE' =>  'Ceuta',
+            'CO' =>  'Córdoba',
+            'CR' =>  'Ciudad Real',
+            'CS' =>  'Castellón',
+            'CU' =>  'Cuenca',
+            'GC' => 'Las Palmas de Gran Canaria',
+            'GE' => 'Gerona',
+            'GR' =>  'Granada',
+            'GU' =>  'Guadalajara',
+            'H'  =>  'Huelva',
+            'HU' => 'Huesca',
+            'J'  =>  'Jaén',
+            'L'  =>  'Lérida',
+            'LE' =>  'León',
+            'LO' =>  'Logroño',
+            'LU' =>  'Lugo',
+            'M'  =>  'Madrid',
+            'MA' =>  'Málaga',
+            'ML' =>  'Melilla',
+            'MU' =>  'Murcia',
+            'NA' => 'Navarra',
+            'O'  =>  'Oviedo',
+            'OR' =>  'Orense',
+            'P'  =>  'Palencia',
+            'PM' =>  'Palma de Mallorca',
+            'PO' =>  'Pontevedra',
+            'S'  =>  'Santander',
+            'SA' =>  'Salamanca',
+            'SE' =>  'Sevilla',
+            'SG' =>  'Segovia',
+            'SO' =>  'Soria',
+            'SS' => 'San Sebastián',
+            'T'  =>  'Tarragona',
+            'TE' =>  'Teruel',
+            'TF' =>  'Santa Cruz de Tenerife',
+            'TO' =>  'Toledo',
+            'V'  =>  'Valencia',
+            'VA' =>  'Valladolid',
+            'VI' =>  'Vizcaya',
+            'Z'  =>  'Zaragoza',
+            'ZA' =>  'Zamora',
+        )
     );
 
     /**
@@ -124,6 +178,17 @@ class Locale extends \Locale
         return $list;
     }
 
+    public static function getLocaleByCliente()
+    {
+        return array(
+            'spotmx' => 'es_mx',
+            'devia'=> 'es_es',
+            'vickyfoods'=> 'es_es',
+            'grefusa'=> 'es_es',
+            'beces'=> 'es_es',
+        );
+    }
+
     /**
      * Sobrescreve $locale se for PMR SPOTMX
      *
@@ -133,9 +198,10 @@ class Locale extends \Locale
      */
     private static function overwriteLocale(&$locale)
     {
-        // Altera locale para exibir UFs do México em spotmx
-        if (defined('CLIENT_NAME') && CLIENT_NAME == 'spotmx') {
-            $locale = 'es_mx';
+        $localeByClient = self::getLocaleByCliente();
+
+        if (array_key_exists(CLIENT_NAME, $localeByClient)) {
+            $locale = $localeByClient[CLIENT_NAME];
         }
     }
 }
