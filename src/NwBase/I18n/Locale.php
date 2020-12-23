@@ -181,11 +181,11 @@ class Locale extends \Locale
     public static function getLocaleByCliente()
     {
         return array(
-            'spotmx' => 'es_mx',
-            'devia'=> 'es_es',
-            'vickyfoods'=> 'es_es',
-            'grefusa'=> 'es_es',
-            'beces'=> 'es_es',
+            'spotmx'     => 'es_mx',
+            'devia'      => 'es_es',
+            'vickyfoods' => 'es_es',
+            'grefusa'    => 'es_es',
+            'beces'      => 'es_es',
         );
     }
 
